@@ -29,33 +29,33 @@ public class CLI
 		
 		int Turno = 0; //TURNO ACTUAL
 
-		String[] Jugador = jugadores(CantJugadores);
+		//String[] Jugador = jugadores(CantJugadores);
 		
 		
-		System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
+		//System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
 						
-//		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+		//int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
 		
 //		int[] Dados = {1,2,3,4,5}; //DEBUG Escalera
 //		int[] Dados = {1,1,4,4,4}; //DEBUG Full
-//		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
+		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
 //		int[] Dados = {1,1,1,1,1}; //DEBUG Generala
-		int[] Dados = {1,1,1,5,6}; //DEBUG
+//		int[] Dados = {1,1,1,5,6}; //DEBUG
 		
 		//CULOS
 		
 		mostrarDados(Dados, CantDados);
 		Turno++;
 		
-		reintentar(Dados, Turnos, Turno, CantDados);
+		//reintentar(Dados, Turnos, Turno, CantDados);
 		
 		//FIJARSE SI EL USUARIO GANO ALGO
 		
-		int[] Estado = new int[13]; //INICIALIZAR
-		//Estado[0] numero de jugador
-		//Estado[1~6] cantidad de Dados del mismo numero que el indice
-		//Estado[7~12] escalera~generala doble
-		//Estado[13] total
+		int[] Estado = new int[13]; //Declaracion y asignacion de memoria
+			//Estado[0] numero de jugador
+			//Estado[1~6] cantidad de Dados del mismo numero que el indice
+			//Estado[7~12] escalera~generala doble
+			//Estado[13] total
 		
 		String[] EstadoTitulo = 
 		{"Jugador","1","2","3","4","5","6",
@@ -251,22 +251,27 @@ public class CLI
 		}
 		
 		//REVISAR SI HAY JUGADAS ESPECIALES
-		for (int i = 1, c = 0; i < CantDados; i++) //(1;CantDados)
+		//iC[1,6] ^ i para cuando encuentra una diferencia de valor
+		if (Estado[i] == i*5)
 		{
-			for (int j = i + 1; j <= CantDados; j++) //(2;CantDados]
+			if (Estado[10] == 0)
 			{
-				if (Dados[i] == Dados[j]) //si algun dado es igual a otro
-				{//no es escalera
-					c++;
-				//si es full
-				//si es poker
-				//si es generala o generala doble
-				}
-				else if (i == CantDados - 1 && c == 0) //si terminaste y son todos diferentes
-				{
-					Estado[7] = 20 + Servido; //es escalera
-				}
+				//generala
+			}
+			else
+			{
+				//generala doble
 			}
 		}
+		if (Estado[i] == i*4)
+		{
+			//poker
+		}
+		//jC[1,6] ^ j continua donde i para?
+		if (Estado[i] == i*2 && Estado[j] == j*3)
+		{
+			//full
+		}
+		if ()
 	}
 }
