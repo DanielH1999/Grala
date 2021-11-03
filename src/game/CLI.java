@@ -34,12 +34,16 @@ public class CLI
 		
 		System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
 						
-		//int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+//		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
 		
-		int[] Dados = {1,4,4,4,4}; //DEBUG
+//		int[] Dados = {1,2,3,4,5}; //DEBUG Escalera
+//		int[] Dados = {1,1,4,4,4}; //DEBUG Full
+//		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
+//		int[] Dados = {1,1,1,1,1}; //DEBUG Generala
+		int[] Dados = {1,1,1,5,6}; //DEBUG
 		
 		//CULOS
-
+		
 		mostrarDados(Dados, CantDados);
 		Turno++;
 		
@@ -64,65 +68,8 @@ public class CLI
 			Servido = 0;
 		}
 		
-		for (int DadoActual = 0; DadoActual < CantDados; DadoActual++)
-		{
-			switch (Dados[DadoActual])
-			{
-				case 1:
-					Estado[1]+=1;
-					break;
-					
-				case 2:
-					Estado[2]+=2;
-					break;
-					
-				case 3:
-					Estado[3]+=3;
-					break;
-					
-				case 4:
-					Estado[4]+=4;
-					break;
-					
-				case 5:
-					Estado[5]+=5;
-					break;
-					
-				case 6:
-					Estado[6]+=6;
-					break;	
-				////////////////////////////Terminan los numeros
-			}
-		}
+		resultados(Estado, Dados, CantDados, Servido);
 		
-		//REVISAR SI HAY JUGADAS ESPECIALES
-		for (int i = 1, contador = 0; i < CantDados; i++)
-		{
-			for (int j = i + 1; j <= CantDados; j++)
-			{
-				if (Estado[j] == 5*j) //SI 5 SON IGUALES
-				{
-					if (Estado[10] != 0)
-						{
-							Estado[11] = 100 + (Servido*4); //GENERALA DOBLE
-						}
-
-					Estado[10] = 50 + (Servido*3); //GENERALA
-				}
-				if (Estado[j] == 4*j) //SI 4 SON IGUALES
-				{
-					Estado[9] = 40 + Servido; //POKER
-				}
-				if (Estado[j] == 3*j && Estado[i] == 2*i) //SI 2 SON IGUALES Y 3 DIFERENTES
-				{
-					Estado[8] = 30 + Servido; //FULL
-				}
-				if (Estado[j] == 1*j && Estado[i] == 1*i) //SI NO SE REPITEN LOS NUMEROS
-				{
-					Estado[7] = 20 + Servido; //Escalera	
-				}
-			}
-		}
 		//dar a elegir la categoria al usuario cuando corresponda
 		
 		System.out.println("Podes...");
@@ -130,7 +77,7 @@ public class CLI
 		for (int i = 1; i < Estado.length; i++)
 		{
 			if (Estado[i] > 0)
-			{
+			{//IGNORAR Generala2 si no tiene Generala1
 				System.out.print("Anotar al ");
 				System.out.println(EstadoTitulo[i] /*+ EsServida*/ + ": " + 
 									Estado[i] + " puntos");
@@ -268,5 +215,58 @@ public class CLI
 		String[] Jugador = nombres.split(", ");
 		
 		return Jugador;
+	}
+
+	private static void resultados(int[] Estado,int[] Dados, int CantDados, int Servido)
+	{
+		for (int DadoActual = 0; DadoActual < CantDados; DadoActual++)
+		{
+			switch (Dados[DadoActual])
+			{
+				case 1:
+					Estado[1]+=1;
+					break;
+					
+				case 2:
+					Estado[2]+=2;
+					break;
+					
+				case 3:
+					Estado[3]+=3;
+					break;
+					
+				case 4:
+					Estado[4]+=4;
+					break;
+					
+				case 5:
+					Estado[5]+=5;
+					break;
+					
+				case 6:
+					Estado[6]+=6;
+					break;	
+				////////////////////////////Terminan los numeros
+			}
+		}
+		
+		//REVISAR SI HAY JUGADAS ESPECIALES
+		for (int i = 1, c = 0; i < CantDados; i++) //(1;CantDados)
+		{
+			for (int j = i + 1; j <= CantDados; j++) //(2;CantDados]
+			{
+				if (Dados[i] == Dados[j]) //si algun dado es igual a otro
+				{//no es escalera
+					c++;
+				//si es full
+				//si es poker
+				//si es generala o generala doble
+				}
+				else if (i == CantDados - 1 && c == 0) //si terminaste y son todos diferentes
+				{
+					Estado[7] = 20 + Servido; //es escalera
+				}
+			}
+		}
 	}
 }
