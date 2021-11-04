@@ -7,6 +7,7 @@ package game;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  *
@@ -34,13 +35,14 @@ public class CLI
 		
 		//System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
 						
-		//int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+//		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
 		
 //		int[] Dados = {1,2,3,4,5}; //DEBUG Escalera
 //		int[] Dados = {1,1,4,4,4}; //DEBUG Full
-		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
+//		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
 //		int[] Dados = {1,1,1,1,1}; //DEBUG Generala
 //		int[] Dados = {1,1,1,5,6}; //DEBUG
+		int[] Dados = {1,3,5,6,6}; //DEBUG
 		
 		//CULOS
 		
@@ -110,6 +112,7 @@ public class CLI
 	
 	private static void mostrarDados(int[] Dados, int CantDados)
 	{
+		Arrays.sort(Dados);
 		for (int i = 0; i < CantDados; i++) //por cada dado que haya
 		{
 			if (Dados[i] == 0) //si algun dado esta marcado
@@ -251,27 +254,83 @@ public class CLI
 		}
 		
 		//REVISAR SI HAY JUGADAS ESPECIALES
-		//iC[1,6] ^ i para cuando encuentra una diferencia de valor
-		if (Estado[i] == i*5)
+		//hacer 1 array contador de repeticiones del 1 a CantDados
+		int[] NumerosRepetidos = new int[6];
+		
+		//revisar Dados[] buscando repetidos o buscar por puntos en Estado[]
+		System.out.println("NumerosRepetidos = ");
+		for (int actual = 0; actual < CantDados; actual++)
 		{
-			if (Estado[10] == 0)
+			for (int comparar = actual + 1; comparar < CantDados; comparar++)
 			{
-				//generala
+				if (Dados[comparar] == Dados[actual])
+				{
+					switch (Dados[actual]) {
+						case 1:
+							NumerosRepetidos[0]++;
+							break;
+						case 2:
+							NumerosRepetidos[1]++;
+							break;
+						case 3:
+							NumerosRepetidos[2]++;
+							break;
+						case 4:
+							NumerosRepetidos[3]++;
+							break;
+						case 5:
+							NumerosRepetidos[4]++;
+							break;
+						case 6:
+							NumerosRepetidos[5]++;
+							break;
+					}
+				}
 			}
-			else
+			System.out.print(NumerosRepetidos[actual] + " ");
+		}
+		System.out.println("");
+		
+		//determinar que puntuacion es posible
+		
+		for (int i = 0; i < CantDados; i++)
+		{
+			if (NumerosRepetidos[i] == 5)
 			{
-				//generala doble
+				if (Estado[10] == 0)
+				{
+					//generala
+					Estado[10] = 50;
+				}
+				else
+				{
+					//generala doble
+					Estado[11] = 100;
+				}
 			}
-		}
-		if (Estado[i] == i*4)
-		{
-			//poker
-		}
-		//jC[1,6] ^ j continua donde i para?
-		if (Estado[i] == i*2 && Estado[j] == j*3)
-		{
-			//full
-		}
-		if ()
+			if (NumerosRepetidos[i] == 4)
+			{
+				//poker
+				Estado[9] = 40;
+			}
+			
+			for (int j = 0; j < CantDados; j++) {
+				if (NumerosRepetidos[i] == 3 && NumerosRepetidos[j] == 2)
+				{
+					//full
+					Estado[8] = 30;
+				}
+			}
+			
+			if (NumerosRepetidos[i] != 0)
+			{
+				boolean EsEscalera = false;
+				if(i == CantDados - 1 && EsEscalera)
+				{
+					//escalera
+					Estado[7] = 20;
+				}
+			}
+		}		
 	}
 }
