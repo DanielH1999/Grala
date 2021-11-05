@@ -31,12 +31,12 @@ public class CLI
 		
 		int Turno = 0; //TURNO ACTUAL
 
-		//String[] Jugador = jugadores(CantJugadores);
+		String[] Jugador = jugadores(CantJugadores);
 		
 		
-		//System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
+		System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
 						
-//		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
 
 		
 //		//DEBUG
@@ -61,8 +61,10 @@ public class CLI
 		int[] Estado = new int[13]; //Declaracion y asignacion de memoria
 			//Estado[0] numero de jugador
 			//Estado[1~6] cantidad de Dados del mismo numero que el indice
-			//Estado[7~12] escalera~generala doble
-			//Estado[13] total
+			//Estado[7~11] escalera~generala doble
+			//Estado[12] total
+			
+			int Jugadas = 10;
 		
 		String[] EstadoTitulo = 
 		{"Jugador","1","2","3","4","5","6",
@@ -76,28 +78,9 @@ public class CLI
 		
 		resultados(Estado, Dados, CantDados, Servido, Turno);
 
+		elegirPuntaje(Estado, EstadoTitulo, Jugadas);
 		
-		//dar a elegir la categoria al usuario cuando corresponda
-		
-		System.out.println("Podes...");
-		
-		for (int i = 1; i < (Estado.length - 2); i++)
-		{
-			System.out.print(i + " -> ");
-			if (Estado[i] > 0)
-			{
-				System.out.print("Anotar al ");
-				System.out.println(EstadoTitulo[i] + ": " + Estado[i] + " puntos");
-			}
-			else
-			{
-				System.out.print("Tachar ");
-				System.out.println(EstadoTitulo[i]);
-			}
-		}
-		
-		//calcular total de puntos
-		
+		determinarGanador(Estado, Jugador, CantJugadores);
 	}
 	
 	private static int[] lanzar(int veces)
@@ -325,5 +308,63 @@ public class CLI
 		System.out.println("");
 		
 		return 0;
+	}
+
+	private static void elegirPuntaje(int[] Estado, String[] EstadoTitulo, int Jugadas)
+	{
+		//dar a elegir la categoria al usuario cuando corresponda
+		Scanner leer = new Scanner(System.in);
+		
+		System.out.println("Elegi: ");
+		
+		for (int i = 1; i <= Jugadas; i++)
+		{
+			System.out.print(i + " -> ");
+			if (Estado[i] > 0)
+			{
+				System.out.print("Anotar " + Estado[i] + " puntos al ");
+				System.out.println(EstadoTitulo[i]);
+			}
+			else if (Estado[i] == 0)
+			{
+				System.out.print("Tachar ");
+				System.out.println(EstadoTitulo[i]);
+			}
+		}
+		
+		int choice;
+		
+		do //dar a elegir que hacer
+		{
+			choice = leer.nextInt();
+			
+			if (Estado[choice] == -1)
+			{
+				System.out.println("Jugada ya hecha...");
+			}
+		}
+		while ((choice < 1 && choice > Jugadas) && Estado[choice] == -1);
+		
+		Estado[12] += Estado[choice]; //sumar los puntos al total
+		
+		if (Estado[choice] > 0)
+		{
+			System.out.println("Anotado: " + Estado[choice] + " puntos al " + EstadoTitulo[choice]);
+		}
+		else
+		{
+			System.out.println("Tachado: " + EstadoTitulo[choice]);
+		}
+		
+		Estado[choice] = -1; //marcar el estado elegido
+	}
+
+	private static void determinarGanador(int[] Estado, String[] Jugador, int CantJugadores)
+	{
+		
+		for (int i = 0; i < CantJugadores; i++)
+		{
+			
+		}
 	}
 }
