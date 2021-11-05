@@ -36,15 +36,18 @@ public class CLI
 		
 		//System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
 						
-//		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+		//int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+
 		
-//		int[] Dados = {1,2,3,4,5}; //DEBUG Escalera
-//		int[] Dados = {1,1,4,4,4}; //DEBUG Full
-//		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
-//		int[] Dados = {1,1,1,1,1}; //DEBUG Generala
-//		int[] Dados = {1,1,1,5,6}; //DEBUG
-//		int[] Dados = {1,3,5,6,6}; //DEBUG
-int[] Dados = {leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt()};
+		//DEBUG
+		int[] Dados = new int[CantDados];
+		System.out.println("dados");
+		for (int i = 0; i < CantDados; i++)
+		{
+			Dados[i] = leer.nextInt();
+		}
+		//GUBED
+		
 		//CULOS
 		
 		mostrarDados(Dados, CantDados);
@@ -79,16 +82,16 @@ int[] Dados = {leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.
 		for (int i = 1; i < Estado.length; i++)
 		{
 			if (Estado[i] > 0)
-			{//IGNORAR Generala2 si no tiene Generala1
+			{
 				System.out.print("Anotar al ");
 				System.out.println(EstadoTitulo[i] /*+ EsServida*/ + ": " + 
 									Estado[i] + " puntos");
 			}
-			else
-			{
-				System.out.print("Tachar ");
-				System.out.println(EstadoTitulo[i]);
-			}
+//			else
+//			{
+//				System.out.print("Tachar ");
+//				System.out.println(EstadoTitulo[i]);
+//			}
 		}
 		
 		//calcular total de puntos
@@ -262,7 +265,7 @@ int[] Dados = {leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.
 		
 		for (int a = 1; a <= 6; a++)
 		{
-				if (Estado[a] == a*5) //busco generala
+				if (Estado[a] == a*5) //busco generala una vez
 				{
 					//System.out.println("Generala/doble");//[a][a][a][a][a]
 					if(Estado[10] == 0)
@@ -273,22 +276,23 @@ int[] Dados = {leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.
 						{
 							return 1;
 						}
+						//AGREGAR GENERALA DOBLE?
 					}
 				}
 				
-				if (Estado[a] == a*4) //busco poker
+				if (Estado[a] == a*4) //busco poker una vez
 				{
 					//System.out.println("Poker");//[a][a][a][a] y [x]
 					Estado[9] = 40 + Servido;
 				}				
 			
-				if (Estado[a] == a*2 || Estado[a] == a*3) //busco full
+				if (Estado[a] == a*2 || Estado[a] == a*3) //busco full un maximo de 2 veces
 				{
 					for (int b = 1; b <= 6; b++)
 					{
 						if (Estado[b] != Estado[a])
 						{
-							if (Estado[b] == b*2 || Estado[b] == b*3)
+							if (Estado[b] == b*2 && Estado[a] == a*3 || Estado[b] == b*3 && Estado[a] == a*2)
 							{
 								//System.out.println("Full");//[a][a][a] y [b][b]
 								Estado[8] = 30 + Servido;
@@ -301,7 +305,7 @@ int[] Dados = {leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.
 		int[] escalera = {1,2,3,4,5};
 		int contEscalera = 0;
 		
-		for (int d = 0; d < CantDados; d++) //busco escalera
+		for (int d = 0; d < CantDados; d++) //busco escalera una vez
 		{
 				if (Dados[d] == escalera[d] || Dados[d] == (escalera[d]+1))
 				{
