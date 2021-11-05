@@ -36,22 +36,24 @@ public class CLI
 		
 		//System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
 						
-		//int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+//		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
 
 		
-		//DEBUG
-		int[] Dados = new int[CantDados];
-		System.out.println("dados");
-		for (int i = 0; i < CantDados; i++)
-		{
-			Dados[i] = leer.nextInt();
-		}
-		//GUBED
+//		//DEBUG
+//		int[] Dados = new int[CantDados];
+//		System.out.println("dados");
+//		for (int i = 0; i < CantDados; i++)
+//		{
+//			Dados[i] = leer.nextInt();
+//		}
+//		//GUBED
 		
 		//CULOS
 		
+		
 		mostrarDados(Dados, CantDados);
 		Turno++;
+		
 		
 		//reintentar(Dados, Turnos, Turno, CantDados);
 		
@@ -79,19 +81,19 @@ public class CLI
 		
 		System.out.println("Podes...");
 		
-		for (int i = 1; i < Estado.length; i++)
+		for (int i = 1; i < (Estado.length - 2); i++)
 		{
+			System.out.print(i + " -> ");
 			if (Estado[i] > 0)
 			{
 				System.out.print("Anotar al ");
-				System.out.println(EstadoTitulo[i] /*+ EsServida*/ + ": " + 
-									Estado[i] + " puntos");
+				System.out.println(EstadoTitulo[i] + ": " + Estado[i] + " puntos");
 			}
-//			else
-//			{
-//				System.out.print("Tachar ");
-//				System.out.println(EstadoTitulo[i]);
-//			}
+			else
+			{
+				System.out.print("Tachar ");
+				System.out.println(EstadoTitulo[i]);
+			}
 		}
 		
 		//calcular total de puntos
@@ -252,64 +254,61 @@ public class CLI
 				case 6:
 					Estado[6]+=6;
 					break;	
-				////////////////////////////Terminan los numeros
+				//Terminan los numeros posibles de los dados
+				//mas adelante en estado estan las jugadas mayores
 			}
 		}
 		
-		//REVISAR SI HAY JUGADAS ESPECIALES
-		//hacer 1 array contador de repeticiones del 1 a CantDados
-		
-		
-		//revisar Dados[] buscando repetidos o buscar por puntos en Estado[]
-		Arrays.sort(Dados);//TEMP
-		
+		//buscar jugadas mayores
+
 		for (int a = 1; a <= 6; a++)
 		{
-				if (Estado[a] == a*5) //busco generala una vez
+			if (Estado[a] == a*5) //busco generala una vez
+			{
+				//[a][a][a][a][a]
+				if(Estado[10] == 0)
 				{
-					//System.out.println("Generala/doble");//[a][a][a][a][a]
-					if(Estado[10] == 0)
+					Estado[10] = 60; //si es servida gana el juego
+
+					if (Turno == 1)
 					{
-						Estado[10] = 60; //si es servida gana el juego
-						
-						if (Turno == 1)
-						{
-							return 1;
-						}
-						//AGREGAR GENERALA DOBLE?
+						return 1;
 					}
+					//AGREGAR GENERALA DOBLE?
 				}
-				
-				if (Estado[a] == a*4) //busco poker una vez
+			}
+
+			if (Estado[a] == a*4) //busco poker una vez
+			{
+				//[a][a][a][a] y [x]
+				Estado[9] = 40 + Servido;
+			}				
+
+			if (Estado[a] == a*2 || Estado[a] == a*3) //busco full un maximo de 2 veces
+			{
+				for (int b = 1; b <= 6; b++)
 				{
-					//System.out.println("Poker");//[a][a][a][a] y [x]
-					Estado[9] = 40 + Servido;
-				}				
-			
-				if (Estado[a] == a*2 || Estado[a] == a*3) //busco full un maximo de 2 veces
-				{
-					for (int b = 1; b <= 6; b++)
+					if (Estado[b] != Estado[a])
 					{
-						if (Estado[b] != Estado[a])
+						if (Estado[b] == b*2 && Estado[a] == a*3 || Estado[b] == b*3 && Estado[a] == a*2)
 						{
-							if (Estado[b] == b*2 && Estado[a] == a*3 || Estado[b] == b*3 && Estado[a] == a*2)
-							{
-								//System.out.println("Full");//[a][a][a] y [b][b]
-								Estado[8] = 30 + Servido;
-							}	
-						}				
-					}		
-				}
+							//[a][a][a] y [b][b]
+							Estado[8] = 30 + Servido;
+						}	
+					}				
+				}		
+			}
 		}
 		
 		int[] escalera = {1,2,3,4,5};
 		int contEscalera = 0;
 		
-		for (int d = 0; d < CantDados; d++) //busco escalera una vez
+		for (int d = 0, last = Dados[d] - 1; d < CantDados; d++) //busco escalera una vez
 		{
-				if (Dados[d] == escalera[d] || Dados[d] == (escalera[d]+1))
+				if ((Dados[d] == escalera[d] || Dados[d] == (escalera[d]+1)) && last == Dados[d] - 1)
 				{
 					contEscalera++;
+					last++;
 				}
 				else
 				{
@@ -319,7 +318,7 @@ public class CLI
 		
 		if (contEscalera == 5) //si el patron esta completo
 		{
-			//System.out.println("Escalera"); //[1][2][3][4][5] o [2][3][4][5][6]
+			//[1][2][3][4][5] o [2][3][4][5][6]
 			Estado[7] = 20 + Servido;
 		}
 		
