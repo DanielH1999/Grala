@@ -19,14 +19,15 @@ public class CLI
 	{
 		Scanner leer = new Scanner(System.in);
 		
-		int CantDados = 5; //TOTAL DE DADOS
+		int CantDados = 5;
 		
-		int CantJugadores = 0; //TOTAL DE JUGADORES
+		int CantJugadores = 0;
 		
-		int Turnos = 3; //TOTAL DE TURNOS
+		int Turnos = 3; //Cantidad de turnos (3 para default)
 		
-		int MultServido = 1; //MULTIPLICADOR DE JUGADA SERVIDA
-
+		int MultServido = 1; //MULTIPLICADOR DE JUGADA SERVIDA (1 para default)
+		
+		int Servido = 5 * MultServido; //valor de jugada servida
 		
 		int Turno = 0; //TURNO ACTUAL
 
@@ -42,8 +43,8 @@ public class CLI
 //		int[] Dados = {2,4,4,4,4}; //DEBUG Poker
 //		int[] Dados = {1,1,1,1,1}; //DEBUG Generala
 //		int[] Dados = {1,1,1,5,6}; //DEBUG
-		int[] Dados = {1,3,5,6,6}; //DEBUG
-		
+//		int[] Dados = {1,3,5,6,6}; //DEBUG
+int[] Dados = {leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt(),leer.nextInt()};
 		//CULOS
 		
 		mostrarDados(Dados, CantDados);
@@ -51,7 +52,6 @@ public class CLI
 		
 		//reintentar(Dados, Turnos, Turno, CantDados);
 		
-		//FIJARSE SI EL USUARIO GANO ALGO
 		
 		int[] Estado = new int[13]; //Declaracion y asignacion de memoria
 			//Estado[0] numero de jugador
@@ -62,15 +62,15 @@ public class CLI
 		String[] EstadoTitulo = 
 		{"Jugador","1","2","3","4","5","6",
 		"Escalera","Full","Poker","Generala","Generala Doble","Totales"};
-				
-		int Servido = 5 * MultServido;
 		
 		if (Turno > 1)
 		{
 			Servido = 0;
 		}
+
 		
-		resultados(Estado, Dados, CantDados, Servido);
+		resultados(Estado, Dados, CantDados, Servido, Turno);
+
 		
 		//dar a elegir la categoria al usuario cuando corresponda
 		
@@ -84,11 +84,11 @@ public class CLI
 				System.out.println(EstadoTitulo[i] /*+ EsServida*/ + ": " + 
 									Estado[i] + " puntos");
 			}
-//			else
-//			{
-//				System.out.print("Tachar ");
-//				System.out.println(EstadoTitulo[i]);
-//			}
+			else
+			{
+				System.out.print("Tachar ");
+				System.out.println(EstadoTitulo[i]);
+			}
 		}
 		
 		//calcular total de puntos
@@ -220,7 +220,7 @@ public class CLI
 		return Jugador;
 	}
 
-	private static void resultados(int[] Estado,int[] Dados, int CantDados, int Servido)
+	private static int resultados(int[] Estado, int[] Dados, int CantDados, int Servido, int Turno)
 	{
 		for (int DadoActual = 0; DadoActual < CantDados; DadoActual++)
 		{
@@ -255,82 +255,72 @@ public class CLI
 		
 		//REVISAR SI HAY JUGADAS ESPECIALES
 		//hacer 1 array contador de repeticiones del 1 a CantDados
-		int[] NumerosRepetidos = new int[6];
+		
 		
 		//revisar Dados[] buscando repetidos o buscar por puntos en Estado[]
-		System.out.println("NumerosRepetidos = ");
-		for (int actual = 0; actual < CantDados; actual++)
+		Arrays.sort(Dados);//TEMP
+		
+		for (int a = 1; a <= 6; a++)
 		{
-			for (int comparar = actual + 1; comparar < CantDados; comparar++)
-			{
-				if (Dados[comparar] == Dados[actual])
+				if (Estado[a] == a*5) //busco generala
 				{
-					switch (Dados[actual]) {
-						case 1:
-							NumerosRepetidos[0]++;
-							break;
-						case 2:
-							NumerosRepetidos[1]++;
-							break;
-						case 3:
-							NumerosRepetidos[2]++;
-							break;
-						case 4:
-							NumerosRepetidos[3]++;
-							break;
-						case 5:
-							NumerosRepetidos[4]++;
-							break;
-						case 6:
-							NumerosRepetidos[5]++;
-							break;
+					//System.out.println("Generala/doble");//[a][a][a][a][a]
+					if(Estado[10] == 0)
+					{
+						Estado[10] = 60; //si es servida gana el juego
+						
+						if (Turno == 1)
+						{
+							return 1;
+						}
 					}
 				}
-			}
-			System.out.print(NumerosRepetidos[actual] + " ");
-		}
-		System.out.println("");
-		
-		//determinar que puntuacion es posible
-		
-		for (int i = 0; i < CantDados; i++)
-		{
-			if (NumerosRepetidos[i] == 5)
-			{
-				if (Estado[10] == 0)
+				
+				if (Estado[a] == a*4) //busco poker
 				{
-					//generala
-					Estado[10] = 50;
+					//System.out.println("Poker");//[a][a][a][a] y [x]
+					Estado[9] = 40 + Servido;
+				}				
+			
+				if (Estado[a] == a*2 || Estado[a] == a*3) //busco full
+				{
+					for (int b = 1; b <= 6; b++)
+					{
+						if (Estado[b] != Estado[a])
+						{
+							if (Estado[b] == b*2 || Estado[b] == b*3)
+							{
+								//System.out.println("Full");//[a][a][a] y [b][b]
+								Estado[8] = 30 + Servido;
+							}	
+						}				
+					}		
+				}
+		}
+		
+		int[] escalera = {1,2,3,4,5};
+		int contEscalera = 0;
+		
+		for (int d = 0; d < CantDados; d++) //busco escalera
+		{
+				if (Dados[d] == escalera[d] || Dados[d] == (escalera[d]+1))
+				{
+					contEscalera++;
 				}
 				else
 				{
-					//generala doble
-					Estado[11] = 100;
+					break;
 				}
-			}
-			if (NumerosRepetidos[i] == 4)
-			{
-				//poker
-				Estado[9] = 40;
-			}
-			
-			for (int j = 0; j < CantDados; j++) {
-				if (NumerosRepetidos[i] == 3 && NumerosRepetidos[j] == 2)
-				{
-					//full
-					Estado[8] = 30;
-				}
-			}
-			
-			if (NumerosRepetidos[i] != 0)
-			{
-				boolean EsEscalera = false;
-				if(i == CantDados - 1 && EsEscalera)
-				{
-					//escalera
-					Estado[7] = 20;
-				}
-			}
-		}		
+		}
+		
+		if (contEscalera == 5) //si el patron esta completo
+		{
+			//System.out.println("Escalera"); //[1][2][3][4][5] o [2][3][4][5][6]
+			Estado[7] = 20 + Servido;
+		}
+		
+		System.out.println("");
+		
+		return 0;
 	}
 }
