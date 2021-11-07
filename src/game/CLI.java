@@ -18,69 +18,85 @@ public class CLI
 	public static void main(String[] args)
 	{
 		Scanner leer = new Scanner(System.in);
-		
+				
 		int CantDados = 5;
 		
-		int CantJugadores = 0;
+		int Turnos = 3; //Cantidad de turnos (default: 3)
 		
-		int Turnos = 3; //Cantidad de turnos (3 para default)
-		
-		int MultServido = 1; //MULTIPLICADOR DE JUGADA SERVIDA (1 para default)
+		int MultServido = 1; //Multiplicador de servido (default: 1)
 		
 		int Servido = 5 * MultServido; //valor de jugada servida
 		
-		int Turno = 0; //TURNO ACTUAL
+		String[] Jugador = jugadores(); //Lista de jugadores
+		int[][] Puntajes = new int[Jugador.length][13]; //Puntuaciones de los jugadores
 
-		String[] Jugador = jugadores(CantJugadores);
-		
-		
-		System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
-						
-		int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
-
-		
-//		//DEBUG
-//		int[] Dados = new int[CantDados];
-//		System.out.println("dados");
-//		for (int i = 0; i < CantDados; i++)
-//		{
-//			Dados[i] = leer.nextInt();
-//		}
-//		//GUBED
-		
-		//CULOS
-		
-		
-		mostrarDados(Dados, CantDados);
-		Turno++;
-		
-		
-		//reintentar(Dados, Turnos, Turno, CantDados);
-		
-		
-		int[] Estado = new int[13]; //Declaracion y asignacion de memoria
-			//Estado[0] numero de jugador
-			//Estado[1~6] cantidad de Dados del mismo numero que el indice
-			//Estado[7~11] escalera~generala doble
-			//Estado[12] total
-			
-			int Jugadas = 10;
-		
-		String[] EstadoTitulo = 
+		String[] tituloPuntajes = 
 		{"Jugador","1","2","3","4","5","6",
-		"Escalera","Full","Poker","Generala","Generala Doble","Totales"};
+		"Escalera","Full","Poker","Generala","Generala Doble","Total"};
+
 		
-		if (Turno > 1)
+		for (int a = 0; a < Jugador.length; a++) //tabla inicial
 		{
-			Servido = 0;
+			Puntajes[a][0] = a; //poner numero de jugador en la primera columna
+		}
+		
+		//Puntajes[jugador][0] numero de jugador
+		//Puntajes[jugador][1~6] cantidad de Dados del mismo numero que el indice
+		//Puntajes[jugador][7~10] escalera~generala
+		//Puntajes[jugador][11] vacio
+		//Puntajes[jugador][12] total
+
+		int cantJugadas = 10; //para modos de juego futuros
+
+		for (int vecesJugadas = 0; vecesJugadas < cantJugadas; vecesJugadas++)
+		{
+			for (int jugador = 0; jugador < Jugador.length; jugador++)
+			{
+				for (int Turno = 0; Turno <= Turnos; Turno++)
+				{
+					//System.out.println("[enter] para tirar tus dados");
+					
+					
+					System.out.println(Jugador[0] + " lanza con la fuerza de 10 locomotoras...");
+
+
+					int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+					//22334 full debug
+					//44466 full debug
+					//13444 full debug
+					//23356 poker debug
+					//22555 poker debug
+					//22222 generala debug
+					//12256 generala debug
+					//CULOS
+
+					Arrays.sort(Dados);
+					
+					
+					mostrarDados(Dados, CantDados);
+					Turno++;
+
+
+					Turno = reintentar(Dados, Turnos, Turno, CantDados);
+					
+					
+					mostrarDados(Dados, CantDados);
+					
+					if (Turno > 1)
+					{
+						Servido = 0;
+					}
+
+
+					if (resultados(tituloPuntajes, Puntajes, Dados, jugador, CantDados, cantJugadas, Servido, Turno) == 1)
+					{
+						System.out.println("¡Generala servida, " + Jugador[jugador] + " gana!");
+					}
+				}
+			}
 		}
 
-		
-		resultados(Estado, Dados, CantDados, Servido, Turno);
-
-		elegirPuntaje(Estado, EstadoTitulo, Jugadas);
-		
-		determinarGanador(Estado, Jugador, CantJugadores);
+		determinarGanador(Jugador, Puntajes);
 	}
 	
 	private static int[] lanzar(int veces)
@@ -100,7 +116,6 @@ public class CLI
 	
 	private static void mostrarDados(int[] Dados, int CantDados)
 	{
-		Arrays.sort(Dados);
 		for (int i = 0; i < CantDados; i++) //por cada dado que haya
 		{
 			if (Dados[i] == 0) //si algun dado esta marcado
@@ -114,15 +129,26 @@ public class CLI
 		System.out.println(""); //imprimir una linea nueva
 	}
 	
-	private static void reintentar(int[] Dados, int Turnos, int Turno, int CantDados)
+	private static int reintentar(int[] Dados, int Turnos, int Turno, int CantDados)
 	{
 		Scanner leer = new Scanner(System.in);
 		
 		while (Turnos > Turno)
 		{
-			System.out.println("¿Queres volver a lanzar algun dado? (S)");
-
-			if (leer.next().equalsIgnoreCase("s"))
+			int reintentar = 0;
+			
+			do
+			{
+				System.out.println("""
+					1 - volver a tirar
+					2 - continuar
+					""");
+				
+				reintentar = leer.nextInt();
+			}
+			while (reintentar != 1 && reintentar != 2);
+			
+			if (reintentar == 1)
 			{
 				int DadosACambiar = 0;
 				
@@ -168,23 +194,28 @@ public class CLI
 					}
 				}
 
-				System.out.println("Nuevos dados: ");
+				Turno++;
+				
+				Arrays.sort(Dados);
 				
 				mostrarDados(Dados, CantDados);
-				Turno++;
 			}
 			else
 			{
+				Turno = Turnos;
 				break;
 			}
 		}
+		return Turno;
 	}
 
-	private static String[] jugadores(int CantJugadores)
+	private static String[] jugadores()
 	{
 		Scanner leer = new Scanner(System.in);
 		
 		String nombres = "";
+		
+		int CantJugadores = 0;
 		
 		while (true)
 		{
@@ -208,50 +239,54 @@ public class CLI
 		return Jugador;
 	}
 
-	private static int resultados(int[] Estado, int[] Dados, int CantDados, int Servido, int Turno)
+	private static int resultados(String[] tituloPuntajes, int[][] Puntajes, int[] Dados, int jugador, int CantDados, int cantJugadas, int Servido, int Turno)
 	{
+		int[] Posibles = new int[cantJugadas+1];
+		
+		Posibles[0] = jugador;
+				
 		for (int DadoActual = 0; DadoActual < CantDados; DadoActual++)
 		{
 			switch (Dados[DadoActual])
 			{
 				case 1:
-					Estado[1]+=1;
+					Posibles[1]+=1;
 					break;
 					
 				case 2:
-					Estado[2]+=2;
+					Posibles[2]+=2;
 					break;
 					
 				case 3:
-					Estado[3]+=3;
+					Posibles[3]+=3;
 					break;
 					
 				case 4:
-					Estado[4]+=4;
+					Posibles[4]+=4;
 					break;
 					
 				case 5:
-					Estado[5]+=5;
+					Posibles[5]+=5;
 					break;
 					
 				case 6:
-					Estado[6]+=6;
+					Posibles[6]+=6;
 					break;	
 				//Terminan los numeros posibles de los dados
-				//mas adelante en estado estan las jugadas mayores
+				//mas adelante en Posibles[] estan las cantJugadas mayores
 			}
 		}
 		
-		//buscar jugadas mayores
+		//buscar cantJugadas mayores
 
 		for (int a = 1; a <= 6; a++)
 		{
-			if (Estado[a] == a*5) //busco generala una vez
+			if (Posibles[a] == a*5) //busco generala una vez
 			{
 				//[a][a][a][a][a]
-				if(Estado[10] == 0)
+				if(Posibles[10] == 0)
 				{
-					Estado[10] = 60; //si es servida gana el juego
+					Posibles[10] = 60; //si es servida gana el juego
 
 					if (Turno == 1)
 					{
@@ -261,22 +296,22 @@ public class CLI
 				}
 			}
 
-			if (Estado[a] == a*4) //busco poker una vez
+			if (Posibles[a] == a*4) //busco poker una vez
 			{
 				//[a][a][a][a] y [x]
-				Estado[9] = 40 + Servido;
+				Posibles[9] = 40 + Servido;
 			}				
 
-			if (Estado[a] == a*2 || Estado[a] == a*3) //busco full un maximo de 2 veces
+			if (Posibles[a] == a*2 || Posibles[a] == a*3) //busco full un maximo de 2 veces
 			{
 				for (int b = 1; b <= 6; b++)
 				{
-					if (Estado[b] != Estado[a])
+					if (Posibles[b] != Posibles[a])
 					{
-						if (Estado[b] == b*2 && Estado[a] == a*3 || Estado[b] == b*3 && Estado[a] == a*2)
+						if (Posibles[b] == b*2 && Posibles[a] == a*3 || Posibles[b] == b*3 && Posibles[a] == a*2)
 						{
 							//[a][a][a] y [b][b]
-							Estado[8] = 30 + Servido;
+							Posibles[8] = 30 + Servido;
 						}	
 					}				
 				}		
@@ -302,33 +337,35 @@ public class CLI
 		if (contEscalera == 5) //si el patron esta completo
 		{
 			//[1][2][3][4][5] o [2][3][4][5][6]
-			Estado[7] = 20 + Servido;
+			Posibles[7] = 20 + Servido;
 		}
 		
 		System.out.println("");
 		
+		elegirPuntaje(tituloPuntajes, cantJugadas, Posibles, Puntajes, jugador);
+		
 		return 0;
 	}
 
-	private static void elegirPuntaje(int[] Estado, String[] EstadoTitulo, int Jugadas)
+	private static void elegirPuntaje(String[] tituloPuntajes, int cantJugadas, int[] Posibles, int[][] Puntajes, int jugador)
 	{
 		//dar a elegir la categoria al usuario cuando corresponda
 		Scanner leer = new Scanner(System.in);
 		
 		System.out.println("Elegi: ");
 		
-		for (int i = 1; i <= Jugadas; i++)
+		for (int i = 1; i <= cantJugadas; i++)
 		{
-			System.out.print(i + " -> ");
-			if (Estado[i] > 0)
+			
+			if (Posibles[i] > 0)
 			{
-				System.out.print("Anotar " + Estado[i] + " puntos al ");
-				System.out.println(EstadoTitulo[i]);
+				System.out.print(i + " -> ");
+				System.out.println("Anotar " + Posibles[i] + " puntos al " + tituloPuntajes[i]);
 			}
-			else if (Estado[i] == 0)
+			else if (Posibles[i] == 0)
 			{
-				System.out.print("Tachar ");
-				System.out.println(EstadoTitulo[i]);
+				System.out.print(i + " -> ");
+				System.out.println("Tachar " + tituloPuntajes[i]);
 			}
 		}
 		
@@ -336,35 +373,69 @@ public class CLI
 		
 		do //dar a elegir que hacer
 		{
-			choice = leer.nextInt();
-			
-			if (Estado[choice] == -1)
+			do //parar choice si esta fuera del rango de eleccion
 			{
-				System.out.println("Jugada ya hecha...");
+				choice = leer.nextInt();
+				
+				if (choice < 1 || choice > cantJugadas)
+				{
+					System.out.println("Fuera del menu...");
+				}
+			}
+			while (choice < 1 || choice > cantJugadas);
+			
+			if (Puntajes[jugador][choice] != 0) //si ya se jugo a esa jugada
+			{
+				System.out.println("Jugada ya hecha:");
+				if (Puntajes[jugador][choice] > 0)
+				{
+					System.out.println(tituloPuntajes[choice]+"|"+Puntajes[jugador][choice]);
+				}
+				else //si se tacho la jugada
+				{
+					System.out.println(tituloPuntajes[choice]+"|"+"-");
+				}
 			}
 		}
-		while ((choice < 1 && choice > Jugadas) && Estado[choice] == -1);
+		while (Puntajes[jugador][choice] != 0);
 		
-		Estado[12] += Estado[choice]; //sumar los puntos al total
-		
-		if (Estado[choice] > 0)
+		Puntajes[jugador][choice] += Posibles[choice];
+
+		if (Puntajes[jugador][choice] > 0)
 		{
-			System.out.println("Anotado: " + Estado[choice] + " puntos al " + EstadoTitulo[choice]);
+			System.out.println("Anotado: " + Puntajes[jugador][choice] + " puntos al " + tituloPuntajes[choice]);
 		}
 		else
 		{
-			System.out.println("Tachado: " + EstadoTitulo[choice]);
+			System.out.println("Tachado: " + tituloPuntajes[choice]);
+			Puntajes[jugador][choice] = -1;
 		}
-		
-		Estado[choice] = -1; //marcar el estado elegido
 	}
 
-	private static void determinarGanador(int[] Estado, String[] Jugador, int CantJugadores)
+	private static void determinarGanador(String[] Jugador, int[][] Puntajes)
 	{
+		//calcular totales
+		for (int i = 1; i <= 11; i++)
+		{
+			for (int jugador = 0; jugador < Jugador.length; jugador++)
+			{
+				Puntajes[jugador][12] += Puntajes[jugador][i];
+			}
+		}
 		
-		for (int i = 0; i < CantJugadores; i++)
+		String Ganador = Jugador[0];
+		int Max = Puntajes[0][12];
+		
+		for (int i = 0; i < Jugador.length; i++)
 		{
 			
+			if (Max < Puntajes[i][12])
+			{
+				Ganador = Jugador[i];
+				Max = Puntajes[i][12];
+			}
 		}
+		
+		System.out.println("¡" +Ganador + " gano la partida con " + Max + " puntos!");
 	}
 }
