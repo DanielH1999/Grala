@@ -16,9 +16,7 @@ import java.util.Arrays;
 public class CLI
 {
 	public static void main(String[] args)
-	{
-		Scanner leer = new Scanner(System.in);
-				
+	{				
 		int CantDados = 5;
 		
 		int Turnos = 3; //Cantidad de turnos (default: 3)
@@ -34,7 +32,7 @@ public class CLI
 		{"Jugador","1","2","3","4","5","6",
 		"Escalera","Full","Poker","Generala","Generala Doble","Total"};
 
-		
+
 		for (int a = 0; a < Jugador.length; a++) //tabla inicial
 		{
 			Puntajes[a][0] = a; //poner numero de jugador en la primera columna
@@ -99,7 +97,6 @@ public class CLI
 				}
 			}
 		}
-
 		determinarGanador(Jugador, Puntajes);
 	}
 	
@@ -203,6 +200,8 @@ public class CLI
 			{
 				break;
 			}
+			System.out.println("Turno " + Turno + "/" + Turnos);
+			
 			Arrays.sort(Dados);
 			
 			mostrarDados(Dados, CantDados);
@@ -365,7 +364,15 @@ public class CLI
 			else if (Posibles[i] == 0)
 			{
 				System.out.print(i + " -> ");
-				System.out.println("Tachar " + tituloPuntajes[i]);
+				if (Puntajes[jugador][i] > 0)
+				{
+					System.out.println(Puntajes[jugador][i]);
+				}
+				else
+				{
+					System.out.println("Tachar " + tituloPuntajes[i]);
+				}
+				
 			}
 		}
 		
@@ -384,7 +391,7 @@ public class CLI
 			}
 			while (choice < 1 || choice > cantJugadas);
 			
-			if (Puntajes[jugador][choice] != 0) //si ya se jugo a esa jugada
+			if (Puntajes[jugador][choice] != 0) //si ya se hizo a esa jugada
 			{
 				System.out.println("Jugada ya hecha:");
 				if (Puntajes[jugador][choice] > 0)
@@ -414,8 +421,17 @@ public class CLI
 
 	private static void determinarGanador(String[] Jugador, int[][] Puntajes)
 	{
+//			//DEBUGGING
+//		int[][] Puntajes = new int[1][13];
+//		String[] Jugador = {"debug"};
+//		for (int i = 1; i < 11; i++)
+//		{
+//			Puntajes[0][i] = 1;
+//		}
+//			//GNIGGUBED
+		
 		//calcular totales
-		for (int jugador = 0; jugador < Jugador.length - 1; jugador++)
+		for (int jugador = 0; jugador < Jugador.length; jugador++)
 		{
 			for (int i = 1; i <= 11; i++)
 			{
@@ -441,6 +457,8 @@ public class CLI
 				Max = Puntajes[i][12];
 			}
 		}
+		
+		
 		
 		if (Max >= 1000)
 		{
