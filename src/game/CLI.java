@@ -5,6 +5,8 @@
  */
 package game;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Arrays;
@@ -15,9 +17,11 @@ import java.util.Arrays;
  */
 public class CLI
 {
-	public static void main(String[] args)
-	{				
-		int CantDados = 5;
+	public static void main(String[] args) throws IOException
+	{
+		BufferedReader buffread = new BufferedReader(new java.io.InputStreamReader(System.in));
+		
+		int cantDados = 5;
 		
 		int Turnos = 3; //Cantidad de turnos (default: 3)
 		
@@ -37,7 +41,7 @@ public class CLI
 		{
 			Puntajes[a][0] = a; //poner numero de jugador en la primera columna
 		}
-				
+		
 		//Puntajes[jugador][0] numero de jugador
 		//Puntajes[jugador][1~6] cantidad de Dados del mismo numero que el indice
 		//Puntajes[jugador][7~10] escalera~generala
@@ -57,35 +61,43 @@ public class CLI
 
 					
 					System.out.println("Turno de " + Jugador[jugador]);
-					//System.out.println("[enter] para tirar tus dados");
 					
+					//System.out.println("Culos:");											//CULOS
+					//int cantCulos = (int) buffread.read();								//CULOS
+					
+					System.out.println("[enter] para tirar tus dados");
+					
+					buffread.readLine();
 					
 					System.out.println(Jugador[jugador] + " lanza con la fuerza de 10 locomotoras...");
 
-
-					int[] Dados = lanzar(CantDados); //hago un array de numeros al azar
+					
+					
+					int[] Dados = lanzar(cantDados); //hago un array de numeros al azar
 					//44466 full debug pass
 					//13444 full debug pass
 					//23356 poker debug pass
 					//22555 poker debug pass
 					//22222 generala debug pass
 					//12256 generala debug pass
-					//CULOS					
+					
+					//culos(Dados, cantCulos, cantDados, buffread);							//CULOS
+					
 					Arrays.sort(Dados);
-					mostrarDados(Dados, CantDados);
+					mostrarDados(Dados, cantDados);
 					
 					
 					Turno++;
 					System.out.println("Turno: " + Turno + "/" + Turnos);
 
 
-					continuar = reintentar(Dados, Turnos, Turno, CantDados, Posibles);
+					continuar = reintentar(Dados, Turnos, Turno, cantDados, Posibles);
 					
 					Turno += Posibles[0];
 					System.out.println("Turno: " + Turno + "/" + Turnos);
 					
 
-					mostrarDados(Dados, CantDados);
+					mostrarDados(Dados, cantDados);
 					
 					if (Turno > 1)
 					{
@@ -93,11 +105,11 @@ public class CLI
 					}
 
 
-					resultados(Posibles, tituloPuntajes, Puntajes, Dados, Jugador, jugador, CantDados, cantJugadas, Servido, Turno);
+					resultados(Posibles, tituloPuntajes, Puntajes, Dados, Jugador, jugador, cantDados, cantJugadas, Servido, Turno);
 				}
 			}
 		}
-		determinarGanador(Jugador, Puntajes);
+		determinarGanador(Jugador, Puntajes, tituloPuntajes);
 	}
 	
 	private static int[] lanzar(int veces)
@@ -115,9 +127,9 @@ public class CLI
 		return resultado;
 	}
 	
-	private static void mostrarDados(int[] Dados, int CantDados)
+	private static void mostrarDados(int[] Dados, int cantDados)
 	{		
-		for (int i = 0; i < CantDados; i++) //por cada dado que haya
+		for (int i = 0; i < cantDados; i++) //por cada dado que haya
 		{
 			if (Dados[i] == 0) //si algun dado esta marcado
 			{
@@ -130,7 +142,32 @@ public class CLI
 		System.out.println(""); //imprimir una linea nueva
 	}
 	
-	private static boolean reintentar(int[] Dados, int Turnos, int Turno, int CantDados, int[] Posibles)
+	private static void culos(int[] Dados, int cantCulos, int cantDados, BufferedReader buffread) throws IOException
+	{
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		//las caras contrarias de los dados suman 7
+		//preguntar cuantos culos antes de la primera tirada
+/*		int[] culos = new int[cantCulos];
+		
+		System.out.print("Dados: ");
+		
+		mostrarDados(Dados, cantDados);
+		
+		System.out.print("Culos: ");
+		for (int dado = 0; dado < cantDados; dado++)
+		{
+			System.out.print((7-Dados[dado]) + " ");
+		}
+		System.out.println("");
+		
+		System.out.println("Selecciona tus culos:");
+		for (int i = 0; i < cantCulos; i++)
+		{
+			Dados[i] = buffread.read()-1;
+		}*/
+	}
+	
+	private static boolean reintentar(int[] Dados, int Turnos, int Turno, int cantDados, int[] Posibles)
 	{
 		Scanner leer = new Scanner(System.in);
 		
@@ -158,15 +195,15 @@ public class CLI
 
 				System.out.println("¿Que Dados queres cambiar? (0 para terminar)");
 
-				mostrarDados(Dados, CantDados);
+				mostrarDados(Dados, cantDados);
 
 				int x;
 
-				for (int i = 0; i < CantDados; i++)
+				for (int i = 0; i < cantDados; i++)
 				{
 					x = leer.nextInt();
 
-					if (x < 0 || x > CantDados) //si el numero ingresado no corresponde a ningun dado
+					if (x < 0 || x > cantDados) //si el numero ingresado no corresponde a ningun dado
 					{
 						i -= 1;
 						System.out.println("NUMERO INVALIDO IGNORADO");
@@ -181,13 +218,13 @@ public class CLI
 						DadosACambiar++; //incrementar el contador de dados a cambiar
 
 						System.out.print("Dados seleccionados: ");
-						mostrarDados(Dados, CantDados);
+						mostrarDados(Dados, cantDados);
 					}
 				}
 
 				int[] cambiados = lanzar(DadosACambiar); //obtener los dados a reemplazar
 
-				for (int i = 0, j = 0; i < CantDados; i++)
+				for (int i = 0, j = 0; i < cantDados; i++)
 				{ 
 					if (Dados[i] == 0) //si el dado actual es un 0
 					{
@@ -204,7 +241,7 @@ public class CLI
 			
 			Arrays.sort(Dados);
 			
-			mostrarDados(Dados, CantDados);
+			mostrarDados(Dados, cantDados);
 		}
 		return false;
 	}
@@ -238,9 +275,9 @@ public class CLI
 		return Jugador;
 	}
 
-	private static void resultados(int[] Posibles, String[] tituloPuntajes, int[][] Puntajes, int[] Dados, String[] Jugador, int jugador, int CantDados, int cantJugadas, int Servido, int Turno)
+	private static void resultados(int[] Posibles, String[] tituloPuntajes, int[][] Puntajes, int[] Dados, String[] Jugador, int jugador, int cantDados, int cantJugadas, int Servido, int Turno)
 	{				
-		for (int DadoActual = 0; DadoActual < CantDados; DadoActual++)
+		for (int DadoActual = 0; DadoActual < cantDados; DadoActual++)
 		{
 			switch (Dados[DadoActual])
 			{
@@ -282,7 +319,7 @@ public class CLI
 					if (Turno == 1) //si es generala servida, gana automaticamente
 					{
 						Puntajes[jugador][12] += 1000;
-						determinarGanador(Jugador,Puntajes);
+						determinarGanador(Jugador,Puntajes,tituloPuntajes);
 					}
 					
 					Posibles[10] = 60;
@@ -314,7 +351,7 @@ public class CLI
 		int[] escalera = {1,2,3,4,5};
 		int contEscalera = 0;
 		
-		for (int d = 0, last = Dados[d] - 1; d < CantDados; d++) //busco escalera una vez
+		for (int d = 0, last = Dados[d] - 1; d < cantDados; d++) //busco escalera una vez
 		{
 				if ((Dados[d] == escalera[d] || Dados[d] == (escalera[d]+1)) && last == Dados[d] - 1)
 				{
@@ -419,17 +456,8 @@ public class CLI
 		}
 	}
 
-	private static void determinarGanador(String[] Jugador, int[][] Puntajes)
+	private static void determinarGanador(String[] Jugador, int[][] Puntajes, String[] tituloPuntajes)
 	{
-//			//DEBUGGING
-//		int[][] Puntajes = new int[1][13];
-//		String[] Jugador = {"debug"};
-//		for (int i = 1; i < 11; i++)
-//		{
-//			Puntajes[0][i] = 1;
-//		}
-//			//GNIGGUBED
-		
 		//calcular totales
 		for (int jugador = 0; jugador < Jugador.length; jugador++)
 		{
@@ -457,8 +485,34 @@ public class CLI
 				Max = Puntajes[i][12];
 			}
 		}
+		//mostrar tabla de jugadores con puntajes
 		
-		
+		for (int x = 0; x < 13; x++)
+		{
+			if (x == 11)
+			{
+				continue;
+			}
+			System.out.print(tituloPuntajes[x]+": \t");
+
+			switch (x)
+			{
+				case 1,2,3,4,5,6,8,9,12 -> System.out.print("\t");
+			}
+			
+			for (int y = 0; y < Jugador.length; y++)
+			{
+				if (x > 0)
+				{
+					System.out.print("|\t"+Puntajes[y][x]);
+				}
+				else
+				{
+					System.out.print("|"+Jugador[y]);
+				}
+			}
+			System.out.println("|");
+		}
 		
 		if (Max >= 1000)
 		{
@@ -468,9 +522,6 @@ public class CLI
 		{
 			System.out.println("¡" +Ganador + " gano la partida con " + Max + " puntos!");
 		}
-		
-		
-		//mostrar tabla de jugadores con puntajes
 		System.exit(0);
 	}
 }
