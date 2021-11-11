@@ -15,6 +15,16 @@ import java.util.Arrays;
  *
  * @author danielh
  */
+//POSIBLES MEJORAS:
+//no ordenar los dados - legibilidad
+//frases aleatorias (DONE)
+//mejorar repeticion de codigo del selector de jugadas
+
+//BUGS CONOCIDOS:
+//parece que podes anotar a un numero tachado a pesar de que no te deja (FIXED)
+//mostrar tachado en vez de -1 (FIXED)
+//no sumar valores al total si son menores a 0 (FIXED)
+
 public class CLI
 {
 	public static void main(String[] args) throws IOException
@@ -69,7 +79,7 @@ public class CLI
 					
 					buffread.readLine();
 					
-					System.out.println(Jugador[jugador] + " lanza con la fuerza de 10 locomotoras...");
+					System.out.println(Jugador[jugador] + " lanza con "+frase());
 
 					
 					
@@ -140,6 +150,50 @@ public class CLI
 			System.out.print(Dados[i] + " "); //si no esta marcado, mostrar el dado			
 		}
 		System.out.println(""); //imprimir una linea nueva
+	}
+	
+		private static String frase()
+	{
+		Random elegir = new Random();
+		
+		String frase = null;
+		
+		switch (elegir.nextInt(10))
+		{
+			case 0:
+				frase = "el poder de una barra de carbono";
+				break;
+			case 1:
+				frase = "la dedicacion de 20 chinos";
+				break;
+			case 2:
+				frase = "la potencia de una locomotora a vapor";
+				break;
+			case 3:
+				frase = "la fuerza de 10 viejos con impotencia";
+				break;
+			case 4:
+				frase = "la fuerza de una patada en la piña";
+				break;
+			case 5:
+				frase = "la motivacion de alguien yendo a cobrar";
+				break;
+			case 6:
+				frase = "la esperanza de un argentino en elecciones";
+				break;
+			case 7:
+				frase = "el poder de un choripan en las masas";
+				break;
+			case 8:
+				frase = "la falsa ilusion de que salga generala";
+				break;
+			case 9:
+				frase = "la frescura de un otaku en verano";
+				break;
+			default:
+				throw new AssertionError();
+		}
+		return frase;
 	}
 	
 	private static void culos(int[] Dados, int cantCulos, int cantDados, BufferedReader buffread) throws IOException
@@ -392,9 +446,13 @@ public class CLI
 				{
 					System.out.println(Puntajes[jugador][i]);
 				}
-				else
+				else if (Puntajes[jugador][i] == 0)
 				{
 					System.out.println("Anotar " + Posibles[i] + " puntos al " + tituloPuntajes[i]);
+				}
+				else
+				{
+					System.out.println("Tachado");
 				}
 				
 			}
@@ -405,9 +463,13 @@ public class CLI
 				{
 					System.out.println(Puntajes[jugador][i]);
 				}
-				else
+				else if (Puntajes[jugador][i] == 0)
 				{
 					System.out.println("Tachar " + tituloPuntajes[i]);
+				}
+				else
+				{
+					System.out.println("Tachado");
 				}
 				
 			}
@@ -463,7 +525,10 @@ public class CLI
 		{
 			for (int i = 1; i <= 11; i++)
 			{
-				Puntajes[jugador][12] += Puntajes[jugador][i];
+				if (Puntajes[jugador][i] > 0)
+				{
+					Puntajes[jugador][12] += Puntajes[jugador][i];
+				}
 			}
 		}
 		
@@ -504,11 +569,18 @@ public class CLI
 			{
 				if (x > 0)
 				{
-					System.out.print("|\t"+Puntajes[y][x]);
+					if (Puntajes[y][x] > 0)
+					{
+						System.out.print("|"+Puntajes[y][x]+"\t");
+					}
+					else
+					{
+						System.out.print("|"+"-"+"\t");
+					}
 				}
 				else
 				{
-					System.out.print("|"+Jugador[y]);
+					System.out.print("|"+Jugador[y]+"\t");
 				}
 			}
 			System.out.println("|");
