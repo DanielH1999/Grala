@@ -17,13 +17,8 @@ import java.util.Arrays;
  */
 //POSIBLES MEJORAS:
 //no ordenar los dados - legibilidad
-//frases aleatorias (DONE)
 //mejorar repeticion de codigo del selector de jugadas
-
-//BUGS CONOCIDOS:
-//parece que podes anotar a un numero tachado a pesar de que no te deja (FIXED)
-//mostrar tachado en vez de -1 (FIXED)
-//no sumar valores al total si son menores a 0 (FIXED)
+//preguntar al usuario si esta seguro de que esos son los dados que quiere cambiar
 
 public class CLI
 {
@@ -158,7 +153,7 @@ public class CLI
 		
 		String frase = null;
 		
-		switch (elegir.nextInt(10))
+		switch (elegir.nextInt(9))
 		{
 			case 0:
 				frase = "el poder de una barra de carbono";
@@ -173,22 +168,19 @@ public class CLI
 				frase = "la fuerza de 10 viejos con impotencia";
 				break;
 			case 4:
-				frase = "la fuerza de una patada en la piña";
+				frase = "la fuerza de una patada en la piña"; //contribucion de Tobias Rossi
 				break;
 			case 5:
-				frase = "la motivacion de alguien yendo a cobrar";
+				frase = "la motivacion de alguien yendo a cobrar"; //contribucion de Tobias Rossi
 				break;
 			case 6:
-				frase = "la esperanza de un argentino en elecciones";
+				frase = "la esperanza de un argentino en elecciones"; //contribucion de Tobias Rossi
 				break;
 			case 7:
-				frase = "el poder de un choripan en las masas";
+				frase = "el poder de un choripan en las masas"; //contribucion de Tobias Rossi
 				break;
 			case 8:
-				frase = "la falsa ilusion de que salga generala";
-				break;
-			case 9:
-				frase = "la frescura de un otaku en verano";
+				frase = "la falsa ilusion de que salga generala"; //contribucion de Tobias Rossi
 				break;
 			default:
 				throw new AssertionError();
