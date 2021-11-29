@@ -3,10 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package Game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Arrays;
@@ -16,17 +14,35 @@ import java.util.Arrays;
  * @author danielh
  */
 //POSIBLES MEJORAS:
-//no ordenar los dados - legibilidad
 //mejorar repeticion de codigo del selector de jugadas
 //preguntar al usuario si esta seguro de que esos son los dados que quiere cambiar
 
 public class CLI
 {
-	public static void main(String[] args) throws IOException
+	public static int[] Dados = lanzar(5); //hago un array de numeros al azar
+
+	public static String[] Jugador = jugadores(); //Lista de jugadores
+	
+	public static int[][] Puntajes = new int[Jugador.length][13]; //Puntuaciones de los jugadores
+		//Puntajes[jugador][0] numero de jugador
+		//Puntajes[jugador][1~6] cantidad de Dados del mismo numero que el indice
+		//Puntajes[jugador][7~10] escalera~generala
+		//Puntajes[jugador][11] vacio
+		//Puntajes[jugador][12] total
+		
+	public static String[] tituloPuntajes = {"Jugador","1","2","3","4","5","6",
+		"Escalera","Full","Poker","Generala","Generala Doble","Total"};
+
+	
+	public static void main(String[] args)
 	{
-		BufferedReader buffread = new BufferedReader(new java.io.InputStreamReader(System.in));
+		Scanner leer = new Scanner(System.in);
+		
+		boolean culosActivados = false;
 		
 		int cantDados = 5;
+		
+		int cantCulos = 0;
 		
 		int Turnos = 3; //Cantidad de turnos (default: 3)
 		
@@ -34,25 +50,11 @@ public class CLI
 		
 		int Servido = 5 * MultServido; //valor de jugada servida
 		
-		String[] Jugador = jugadores(); //Lista de jugadores
-		int[][] Puntajes = new int[Jugador.length][13]; //Puntuaciones de los jugadores
-
-		String[] tituloPuntajes = 
-		{"Jugador","1","2","3","4","5","6",
-		"Escalera","Full","Poker","Generala","Generala Doble","Total"};
-
-
-		for (int a = 0; a < Jugador.length; a++) //tabla inicial
+		for (int a = 0; a < Jugador.length; a++) //inicializar tabla de putajes
 		{
 			Puntajes[a][0] = a; //poner numero de jugador en la primera columna
 		}
 		
-		//Puntajes[jugador][0] numero de jugador
-		//Puntajes[jugador][1~6] cantidad de Dados del mismo numero que el indice
-		//Puntajes[jugador][7~10] escalera~generala
-		//Puntajes[jugador][11] vacio
-		//Puntajes[jugador][12] total
-
 		int cantJugadas = 10; //para modos de juego futuros
 
 		for (int vecesJugadas = 0; vecesJugadas < cantJugadas; vecesJugadas++)
@@ -65,38 +67,30 @@ public class CLI
 					int[] Posibles = new int[cantJugadas+1];
 
 					
-					System.out.println("Turno de " + Jugador[jugador]);
+					System.out.println("Turno de " + Jugador[jugador] + "\n");
 					
-					//System.out.println("Culos:");											//CULOS
-					//int cantCulos = (int) buffread.read();								//CULOS
+					if (culosActivados)
+					{
+						System.out.print("Cantidad de culos (0 para ninguno): ");
+						
+						cantCulos = leer.nextInt();
+					}
 					
-					System.out.println("[enter] para tirar tus dados");
-					
-					buffread.readLine();
-					
-					System.out.println(Jugador[jugador] + " lanza con "+frase());
-
-					
-					
-					int[] Dados = lanzar(cantDados); //hago un array de numeros al azar
-					//44466 full debug pass
-					//13444 full debug pass
-					//23356 poker debug pass
-					//22555 poker debug pass
-					//22222 generala debug pass
-					//12256 generala debug pass
-					
-					//culos(Dados, cantCulos, cantDados, buffread);							//CULOS
+					System.out.println(Jugador[jugador] + " lanza con "+frase());					
 					
 					Arrays.sort(Dados);
 					mostrarDados(Dados, cantDados);
 					
+					if (culosActivados)
+					{
+						culos(Dados, cantCulos, cantDados);
+					}
 					
 					Turno++;
 					System.out.println("Turno: " + Turno + "/" + Turnos);
 
 
-					continuar = reintentar(Dados, Turnos, Turno, cantDados, Posibles);
+					continuar = reintentar(Dados, Turnos, Turno, cantDados, cantCulos, Posibles, culosActivados);
 					
 					Turno += Posibles[0];
 					System.out.println("Turno: " + Turno + "/" + Turnos);
@@ -117,7 +111,7 @@ public class CLI
 		determinarGanador(Jugador, Puntajes, tituloPuntajes);
 	}
 	
-	private static int[] lanzar(int veces)
+	public static int[] lanzar(int veces)
 	{
 		Random azar = new Random();
 
@@ -132,7 +126,7 @@ public class CLI
 		return resultado;
 	}
 	
-	private static void mostrarDados(int[] Dados, int cantDados)
+	public static void mostrarDados(int[] Dados, int cantDados)
 	{		
 		for (int i = 0; i < cantDados; i++) //por cada dado que haya
 		{
@@ -188,12 +182,20 @@ public class CLI
 		return frase;
 	}
 	
-	private static void culos(int[] Dados, int cantCulos, int cantDados, BufferedReader buffread) throws IOException
+	private static void culos(int[] Dados, int cantCulos, int cantDados)
 	{
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		//las caras contrarias de los dados suman 7
 		//preguntar cuantos culos antes de la primera tirada
-/*		int[] culos = new int[cantCulos];
+		
+/*		if (cantCulos == 0)
+		{
+			return; //evitar todo el proceso y salir de la funcion
+		}
+		
+		Scanner leer = new Scanner(System.in);
+		
+		int[] culos = new int[cantCulos];
 		
 		System.out.print("Dados: ");
 		
@@ -202,18 +204,29 @@ public class CLI
 		System.out.print("Culos: ");
 		for (int dado = 0; dado < cantDados; dado++)
 		{
-			System.out.print((7-Dados[dado]) + " ");
+			culos[dado] = (7 - Dados[dado]);
+			System.out.print(culos[dado] + " ");
 		}
 		System.out.println("");
 		
 		System.out.println("Selecciona tus culos:");
+		
+		int selection;
+		
 		for (int i = 0; i < cantCulos; i++)
 		{
-			Dados[i] = buffread.read()-1;
-		}*/
-	}
+			do
+			{
+				System.out.print("culo " + i + ": ");
+				selection = leer.nextInt();
+			}
+			while (selection < 1 || selection > cantDados);
+			
+			Dados[selection] = culos[i];
+		}
+*/	}
 	
-	private static boolean reintentar(int[] Dados, int Turnos, int Turno, int cantDados, int[] Posibles)
+	private static boolean reintentar(int[] Dados, int Turnos, int Turno, int cantDados, int cantCulos, int[] Posibles, boolean culosActivados)
 	{
 		Scanner leer = new Scanner(System.in);
 		
@@ -238,8 +251,15 @@ public class CLI
 				Turno++;
 
 				int DadosACambiar = 0;
+				
+				if (culosActivados)
+				{
+					System.out.print("Cantidad de culos (0 -> ninguno): ");
 
-				System.out.println("¿Que Dados queres cambiar? (0 para terminar)");
+					cantCulos = leer.nextInt();
+				}
+				
+				System.out.println("¿Que Dados queres cambiar? (0 -> terminar)");
 
 				mostrarDados(Dados, cantDados);
 
@@ -288,11 +308,16 @@ public class CLI
 			Arrays.sort(Dados);
 			
 			mostrarDados(Dados, cantDados);
+			
+			if (culosActivados)
+			{
+				culos(Dados, cantCulos, cantDados);
+			}
 		}
 		return false;
 	}
 
-	private static String[] jugadores()
+	public static String[] jugadores()
 	{
 		Scanner leer = new Scanner(System.in);
 		
@@ -510,7 +535,7 @@ public class CLI
 		}
 	}
 
-	private static void determinarGanador(String[] Jugador, int[][] Puntajes, String[] tituloPuntajes)
+	public static void determinarGanador(String[] Jugador, int[][] Puntajes, String[] tituloPuntajes)
 	{
 		//calcular totales
 		for (int jugador = 0; jugador < Jugador.length; jugador++)
@@ -542,8 +567,21 @@ public class CLI
 				Max = Puntajes[i][12];
 			}
 		}
-		//mostrar tabla de jugadores con puntajes
 		
+		mostrartablero(tituloPuntajes, Jugador, Puntajes);
+		
+		if (Max >= 1000)
+		{
+			System.out.println("¡" +Ganador + " gano la partida por generala servida!");
+		}
+		else
+		{
+			System.out.println("¡" +Ganador + " gano la partida con " + Max + " puntos!");
+		}
+		System.exit(0);
+	}
+	private static void mostrartablero(String[] tituloPuntajes, String[] Jugador, int[][] Puntajes)
+	{
 		for (int x = 0; x < 13; x++)
 		{
 			if (x == 11)
@@ -577,15 +615,5 @@ public class CLI
 			}
 			System.out.println("|");
 		}
-		
-		if (Max >= 1000)
-		{
-			System.out.println("¡" +Ganador + " gano la partida por generala servida!");
-		}
-		else
-		{
-			System.out.println("¡" +Ganador + " gano la partida con " + Max + " puntos!");
-		}
-		System.exit(0);
 	}
 }
