@@ -19,21 +19,6 @@ import java.util.Arrays;
 
 public class CLI
 {
-	public static int[] Dados = lanzar(5); //hago un array de numeros al azar
-
-	public static String[] Jugador = jugadores(); //Lista de jugadores
-	
-	public static int[][] Puntajes = new int[Jugador.length][13]; //Puntuaciones de los jugadores
-		//Puntajes[jugador][0] numero de jugador
-		//Puntajes[jugador][1~6] cantidad de Dados del mismo numero que el indice
-		//Puntajes[jugador][7~10] escalera~generala
-		//Puntajes[jugador][11] vacio
-		//Puntajes[jugador][12] total
-		
-	public static String[] tituloPuntajes = {"Jugador","1","2","3","4","5","6",
-		"Escalera","Full","Poker","Generala","Generala Doble","Total"};
-
-	
 	public static void main(String[] args)
 	{
 		Scanner leer = new Scanner(System.in);
@@ -50,6 +35,19 @@ public class CLI
 		
 		int Servido = 5 * MultServido; //valor de jugada servida
 		
+		String[] Jugador = jugadores(); //Lista de jugadores
+	
+		int[][] Puntajes = new int[Jugador.length][13]; //Puntuaciones de los jugadores
+			//Puntajes[jugador][0] numero de jugador
+			//Puntajes[jugador][1~6] cantidad de Dados del mismo numero que el indice
+			//Puntajes[jugador][7~10] escalera~generala
+			//Puntajes[jugador][11] vacio
+			//Puntajes[jugador][12] total
+
+		String[] tituloPuntajes = {"Jugador","1","2","3","4","5","6",
+			"Escalera","Full","Poker","Generala","Generala Doble","Total"};
+
+		
 		for (int a = 0; a < Jugador.length; a++) //inicializar tabla de putajes
 		{
 			Puntajes[a][0] = a; //poner numero de jugador en la primera columna
@@ -61,6 +59,8 @@ public class CLI
 		{
 			for (int jugador = 0; jugador < Jugador.length; jugador++)
 			{
+				int[] Dados = lanzar(5); //hago un array de numeros al azar
+				
 				boolean continuar = true;
 				for (int Turno = 0; Turno <= Turnos && continuar; Turno++)
 				{
