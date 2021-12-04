@@ -333,56 +333,82 @@ public class MainWindow extends javax.swing.JFrame {
 		
     private void dice1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice1MouseClicked
 		holdDice(dice1);
+		guardar(1);
     }//GEN-LAST:event_dice1MouseClicked
 
     private void dice2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice2MouseClicked
 		holdDice(dice2);
+		guardar(2);
     }//GEN-LAST:event_dice2MouseClicked
 
     private void dice3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice3MouseClicked
 		holdDice(dice3);
+		guardar(3);
     }//GEN-LAST:event_dice3MouseClicked
 
     private void dice4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice4MouseClicked
 		holdDice(dice4);
+		guardar(4);
     }//GEN-LAST:event_dice4MouseClicked
 
     private void dice5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice5MouseClicked
 		holdDice(dice5);
+		guardar(5);
     }//GEN-LAST:event_dice5MouseClicked
 
     private void holder5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder5MouseClicked
 		returnDice(holder5);
         setHolderIcon(holder5);
+		descartar(5);
     }//GEN-LAST:event_holder5MouseClicked
 
     private void holder4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder4MouseClicked
 		returnDice(holder4);
         setHolderIcon(holder4);
+		descartar(4);
     }//GEN-LAST:event_holder4MouseClicked
 
     private void holder3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder3MouseClicked
 		returnDice(holder3);
         setHolderIcon(holder3);
+		descartar(3);
     }//GEN-LAST:event_holder3MouseClicked
 
     private void holder2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder2MouseClicked
 		returnDice(holder2);
         setHolderIcon(holder2);
+		descartar(2);
     }//GEN-LAST:event_holder2MouseClicked
 
     private void holder1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder1MouseClicked
 		returnDice(holder1);
         setHolderIcon(holder1);
+		descartar(1);
     }//GEN-LAST:event_holder1MouseClicked
 
+	private void guardar(int index)
+	{
+		index--;
+		generala.guardados[index] = generala.dados[index];
+		generala.dados[index] = 0;
+	}
+	
+	private void descartar(int index)
+	{
+		index--;
+		generala.dados[index] = generala.guardados[index];
+		generala.guardados[index] = 0;
+	}
+	
     private void tirarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tirarMouseClicked
 
         JLabel[] holder = {holder1,holder2,holder3,holder4,holder5};
-
+		JLabel[] dice = {dice1,dice2,dice4,dice3,dice5};
+		
+		//fijarse cuantos holder estan ocupados (turnos veces)
         int takenHolders = 0;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < generala.dados.length; i++)
         {
             if (isHolding(holder[i]))
             {
@@ -390,15 +416,25 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 		
-        generala.dados = generala.lanzar(5 - takenHolders);
-        
-		int[] originalDice = generala.dados;
-        
-		setDiceIcons();
+		//tirar generala.dados.length - holder ocupados (turnos veces)
+		generala.dados = generala.lanzar(generala.dados.length - takenHolders);
+		
+		//poner los iconos de los dados en dice (turnos veces)
+		setDiceIcons(generala.dados, dice);
+		
+		//fin del primer turno
+		tirar.setText("Volver a tirar");
+		
+		//al terminar los turnos, pasar todos los dados a los holders
 		
 		orderDiceIcons();
 		
-		getDiceValues();
+		generala.dados = generala.cambiarDados(getDiceValues(generala.dados, dice));
+		
+		
+		
+		//when holders are full, evaluate possible scores
+		
     }//GEN-LAST:event_tirarMouseClicked
 	
 	private void setHolderIcon(JLabel holder)
@@ -406,17 +442,20 @@ public class MainWindow extends javax.swing.JFrame {
 		holder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/diceHolder.png")));
 	}
 	
-	private void setDiceIcons()
+	private void setDiceIcons(int[] dados, JLabel[] dice)
 	{
-		int[] dados = generala.dados;
-		
 		Arrays.sort(dados);
-		
-		JLabel[] dice = {dice1,dice2,dice4,dice3,dice5};
 		
 		for (int i = 0; i < dados.length; i++)
 		{
-			dice[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/d"+dados[i]+".png")));
+			if (dados[i] > 0)
+			{
+				dice[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/d"+dados[i]+".png")));
+			}
+			else
+			{
+				dice[i].setIcon(null);
+			}
 		}
 	}
 	
@@ -441,8 +480,7 @@ public class MainWindow extends javax.swing.JFrame {
 					}	
 				}
 			}
-		}
-		
+		}	
 	}
 	
 	private boolean hasIcon(JLabel label)
@@ -507,19 +545,13 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 
-	private void getDiceValues()
-	{
-		int[] dados = generala.dados;
-		
+	private int[] getDiceValues(int[] dados, JLabel[] dice)
+	{	
 		Arrays.sort(dados);
 		
-		JLabel[] dice = {dice1,dice2,dice4,dice3,dice5};
-		
-		dice1.getIcon().toString();
-		
-		for (int i = 0; i < 5; i++)
-		{
-			switch (dice[i].getIcon().toString().charAt(i))
+		for (int i = 0, j = 0; i < dados.length; i++)
+		{			
+			switch (((int) dice[i].getIcon().toString().charAt(83)) - 48)
 			{
 				case 1:
 					dados[i] = 1;
@@ -540,9 +572,11 @@ public class MainWindow extends javax.swing.JFrame {
 					dados[i] = 6;
 					break;
 				default:
-					throw new AssertionError();
+					dados[i] = 0;
+					break;
 			}
 		}
+		return dados;
 	}	
 
 	/**

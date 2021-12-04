@@ -22,7 +22,9 @@ public class Generala
 	
 	public int[] jugadasPosibles;
 	
-	public int[] dados;
+	public int[] dados = new int[5];
+	
+	public int[] guardados = new int[5];
 
 	public String[] jugadores;
 	
@@ -54,41 +56,16 @@ public class Generala
 		
 		return resultado;
 	}
-	
-	private void reintentar(boolean respuesta, int[] dados, int Turno, int[] jugadasPosibles)
-	{
-			if (respuesta = true)
-			{
-				jugadasPosibles[0]++;
-				Turno++;
-				
-				cambiarDados(dados);
-			}			
-			Arrays.sort(dados);
-	}
 
-	public void cambiarDados(int[] dados)
+	public int[] cambiarDados(int[] dados)
 	{
-		int dadosACambiar = 0;
-
-		int x = 0; //elegir dados a cambiar
+		int[] cambiados = lanzar(dados.length); //obtener los dados a reemplazar
 
 		for (int i = 0; i < dados.length; i++)
-		{
-			dados[x - 1] = 0; //marcar el dado a cambiar con un 0
-			dadosACambiar++; //incrementar el contador de dados a cambiar
-		}
-
-		int[] cambiados = lanzar(dadosACambiar); //obtener los dados a reemplazar
-
-		for (int i = 0, j = 0; i < dados.length; i++)
 		{ 
-			if (dados[i] == 0) //si el dado actual es un 0
-			{
-				dados[i] = cambiados[j]; //lo cambiamos 
-				j++; //vamos al siguiente elemento del array cambiados
-			}
+			dados[i] = cambiados[i]; //lo cambiamos 
 		}
+		return dados;
 	}
 	
 	private void calcularJugadas(int[] jugadasPosibles, int[] dados, int Turno)
