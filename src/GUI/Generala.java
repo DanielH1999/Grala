@@ -20,7 +20,7 @@ public class Generala
 	
 	public String ganador;
 	
-	public int[] jugadasPosibles;
+	public int[] jugadasPosibles = new int[11];
 	
 	public int[] dados = new int[5];
 	
@@ -29,18 +29,27 @@ public class Generala
 	public String[] jugadores;
 	
 	public int[][] tablaPuntajes; //Puntuaciones de los jugadores
-		//Puntajes[jugador][0] numero de jugador
-		//Puntajes[jugador][1~6] cantidad de dados del mismo numero que el indice
-		//Puntajes[jugador][7~10] escalera~generala
-		//Puntajes[jugador][11] total
+		//tablaPuntajes[jugador][0] numero de jugador
+		//tablaPuntajes[jugador][1~6] cantidad de dados del mismo numero que el indice
+		//tablaPuntajes[jugador][7~10] escalera~generala
+		//tablaPuntajes[jugador][11] total
 
 	public boolean[][] jugadaHecha;
 	
 	public String[] tituloPuntajes = {"Jugador","1","2","3","4","5","6",
 		"Escalera","Full","Poker","Generala","Total"};
 
-	
-	public Generala(){}
+	public Generala(String[] nombres)
+	{
+		jugadores = nombres;
+		
+		tablaPuntajes = new int[jugadores.length][12];
+		
+		for (int i = 0; i < tablaPuntajes.length; i++)
+		{
+			tablaPuntajes[i][0] = i;
+		}
+	}
 	
 	public int[] lanzar(int veces)
 	{
@@ -68,7 +77,7 @@ public class Generala
 		return dados;
 	}
 	
-	private void calcularJugadas(int[] jugadasPosibles, int[] dados, int Turno)
+	public void calcularJugadas(int[] jugadasPosibles, int[] dados, int Turno)
 	{
 		int Servido = 5;
 		
@@ -166,49 +175,37 @@ public class Generala
 		}
 	}
 	
-	private static void puntuar(String[] tituloPuntajes, int[] jugadasPosibles, int[][] Puntajes, int jugador, int choice, int i)
+	public int[] getSeleccionable(int[] jugadasPosibles, int jugador)
 	{
-		if (jugadasPosibles[i] > 0)
+		int[] seleccionable = {0,0,0,0,0,0,0,0,0,0};
+				
+		for (int i = 0; i < (jugadasPosibles.length - 1); i++)
 		{
-			System.out.print(i + " -> ");
-			if (Puntajes[jugador][i] > 0)
+			if (jugadasPosibles[i+1] > 0 && tablaPuntajes[jugador][i+1] == 0) //si hay posibilidad y disponibilidad
 			{
-				System.out.println(Puntajes[jugador][i]);
+				seleccionable[i] = 1; //puntuable
 			}
-			else if (Puntajes[jugador][i] == 0)
+			else if (jugadasPosibles[i+1] == 0 && tablaPuntajes[jugador][i+1] == 0) //si no hay posibilidad pero hay disponibilidad
 			{
-				System.out.println("Anotar " + jugadasPosibles[i] + " puntos al " + tituloPuntajes[i]);
+				seleccionable[i] = -1; //tachable
 			}
-			else
-			{
-				System.out.println("Tachado");
-			}
-
-		}
-		else if (jugadasPosibles[i] == 0)
-		{
-			System.out.print(i + " -> ");
-			if (Puntajes[jugador][i] > 0)
-			{
-				System.out.println(Puntajes[jugador][i]);
-			}
-			else if (Puntajes[jugador][i] == 0)
-			{
-				System.out.println("Tachar " + tituloPuntajes[i]);
-			}
-			else
-			{
-				System.out.println("Tachado");
-			}
-
 		}
 		
-		do //dar a elegir que hacer
+		return seleccionable;
+	}
+	
+	public void puntuar(String[] tituloPuntajes, int[] jugadasPosibles, int[][] tablaPuntajes, int jugador, int seleccion)
+	{
+		tablaPuntajes[jugador][seleccion] += jugadasPosibles[seleccion];
+
+		if (tablaPuntajes[jugador][seleccion] > 0)
 		{
-			//revisar que se pueda hacer (este en la lista de posibilidades y no se haya hecho antes)
+			System.out.println("Anotado: " + tablaPuntajes[jugador][seleccion] + " puntos al " + tituloPuntajes[seleccion]);
 		}
-		while (Puntajes[jugador][choice] != 0);
-		
-		Puntajes[jugador][choice] += jugadasPosibles[choice];
+		else
+		{
+			System.out.println("Tachado: " + tituloPuntajes[seleccion]);
+			tablaPuntajes[jugador][seleccion] = -1;
+		}
 	}
 }

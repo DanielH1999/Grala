@@ -19,13 +19,15 @@ public class MainWindow extends javax.swing.JFrame {
 	 * Creates new form MainWindow
 	 */
 	
-	public Generala generala = new Generala();
+	public Generala generala = new Generala(PlayersWindow.getPlayers());
 	
 	public MainWindow()
 	{
 		initComponents();
 		this.setLocationRelativeTo(this);
 		this.setMinimumSize(this.getPreferredSize());
+		
+		//SelectionWindow selectionWindow = new SelectionWindow();
 		
 		generala.jugadores = PlayersWindow.getPlayers();
 		
@@ -229,7 +231,7 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tirar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -257,7 +259,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(leftPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(dicePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -329,128 +331,111 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 	
-	
-		
+	public int takenHolders = 0;
+
     private void dice1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice1MouseClicked
-		holdDice(dice1);
-		guardar(1);
+		swapDice(dice1, holder1, 1);
     }//GEN-LAST:event_dice1MouseClicked
 
     private void dice2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice2MouseClicked
-		holdDice(dice2);
-		guardar(2);
+		swapDice(dice2, holder2, 2);
     }//GEN-LAST:event_dice2MouseClicked
 
     private void dice3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice3MouseClicked
-		holdDice(dice3);
-		guardar(3);
+		swapDice(dice3, holder3, 3);
     }//GEN-LAST:event_dice3MouseClicked
 
     private void dice4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice4MouseClicked
-		holdDice(dice4);
-		guardar(4);
+		swapDice(dice4, holder4, 4);
     }//GEN-LAST:event_dice4MouseClicked
 
     private void dice5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dice5MouseClicked
-		holdDice(dice5);
-		guardar(5);
+		swapDice(dice5, holder5, 5);
     }//GEN-LAST:event_dice5MouseClicked
 
     private void holder5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder5MouseClicked
-		returnDice(holder5);
-        setHolderIcon(holder5);
-		descartar(5);
+		swapDice(dice5, holder5, 5);
     }//GEN-LAST:event_holder5MouseClicked
 
     private void holder4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder4MouseClicked
-		returnDice(holder4);
-        setHolderIcon(holder4);
-		descartar(4);
+		swapDice(dice4, holder4, 4);
     }//GEN-LAST:event_holder4MouseClicked
 
     private void holder3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder3MouseClicked
-		returnDice(holder3);
-        setHolderIcon(holder3);
-		descartar(3);
+		swapDice(dice3, holder3, 3);
     }//GEN-LAST:event_holder3MouseClicked
 
     private void holder2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder2MouseClicked
-		returnDice(holder2);
-        setHolderIcon(holder2);
-		descartar(2);
+		swapDice(dice2, holder2, 2);
     }//GEN-LAST:event_holder2MouseClicked
 
     private void holder1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_holder1MouseClicked
-		returnDice(holder1);
-        setHolderIcon(holder1);
-		descartar(1);
+		swapDice(dice1, holder1, 1);
     }//GEN-LAST:event_holder1MouseClicked
 
-	private void guardar(int index)
-	{
-		index--;
-		generala.guardados[index] = generala.dados[index];
-		generala.dados[index] = 0;
-	}
+	String btnPuntuarTxt = "Puntuar";
+	String btnTirarTxt = "Tirar (x/3)";
 	
-	private void descartar(int index)
-	{
-		index--;
-		generala.dados[index] = generala.guardados[index];
-		generala.guardados[index] = 0;
-	}
+	int jugador = 0;
+	int turno = 1;
 	
     private void tirarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tirarMouseClicked
-
-        JLabel[] holder = {holder1,holder2,holder3,holder4,holder5};
-		JLabel[] dice = {dice1,dice2,dice4,dice3,dice5};
+		evaluatePlays(jugador);
 		
-		//fijarse cuantos holder estan ocupados (turnos veces)
-        int takenHolders = 0;
-
-        for (int i = 0; i < generala.dados.length; i++)
-        {
-            if (isHolding(holder[i]))
-            {
-                takenHolders++;
-            }
-        }
-		
-		//tirar generala.dados.length - holder ocupados (turnos veces)
-		generala.dados = generala.lanzar(generala.dados.length - takenHolders);
+        JLabel[] holderList = {holder1,holder2,holder3,holder4,holder5};
+		JLabel[] diceList = {dice1,dice2,dice3,dice4,dice5};
+				
+		tirarDados();
 		
 		//poner los iconos de los dados en dice (turnos veces)
-		setDiceIcons(generala.dados, dice);
+		setDiceIcons(diceList);
+		
+		System.out.println("\ndice:\t"+Arrays.toString(generala.dados)); //DEBUG
+		System.out.println("saved:\t"+Arrays.toString(generala.guardados)); //DEBUG
 		
 		//fin del primer turno
-		tirar.setText("Volver a tirar");
+		tirar.setText(btnTirarTxt);
 		
 		//al terminar los turnos, pasar todos los dados a los holders
-		
-		orderDiceIcons();
-		
-		generala.dados = generala.cambiarDados(getDiceValues(generala.dados, dice));
-		
-		
-		
-		//when holders are full, evaluate possible scores
-		
     }//GEN-LAST:event_tirarMouseClicked
+	
+	private void changeButton()
+	{
+		if (takenHolders == 5)
+		{
+			tirar.setText(btnPuntuarTxt);
+			System.out.println("if button clicked, evaluate plays and execute selector");
+		}
+		else
+		{
+			tirar.setText(btnTirarTxt);
+		}
+	}
+	
+	private void evaluatePlays(int jugador)
+	{
+		if (tirar.getText().equals(btnPuntuarTxt))
+		{
+			generala.calcularJugadas(generala.jugadasPosibles, generala.guardados, turno);
+			
+			SelectionWindow selectionWindow = new SelectionWindow();
+			selectionWindow.jugador = jugador;
+			selectionWindow.setVisible(true);
+		}
+	}
 	
 	private void setHolderIcon(JLabel holder)
 	{
 		holder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/diceHolder.png")));
 	}
 	
-	private void setDiceIcons(int[] dados, JLabel[] dice)
-	{
-		Arrays.sort(dados);
-		
-		for (int i = 0; i < dados.length; i++)
+	private void setDiceIcons(JLabel[] dice)
+	{		
+		for (int i = 0; i < generala.dados.length; i++)
 		{
-			if (dados[i] > 0)
+			if (generala.dados[i] > 0)
 			{
-				dice[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/d"+dados[i]+".png")));
+				dice[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/d"+generala.dados[i]+".png")));
 			}
 			else
 			{
@@ -459,34 +444,8 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
-	private void orderDiceIcons()
-	{
-		JLabel[] dice = {dice1,dice2,dice3,dice4,dice5};
-		
-		boolean changed = true;
-		
-		while (changed)
-		{
-			changed = false;
-			for (int i = 0; i < 4; i++)
-			{
-				for (int j = i + 1; j < 5; j++)
-				{
-					if (!hasIcon(dice[i]) && hasIcon(dice[j]))
-					{
-						dice[i].setIcon(dice[j].getIcon());
-						dice[j].setIcon(null);
-						changed = true;
-					}	
-				}
-			}
-		}	
-	}
-	
 	private boolean hasIcon(JLabel label)
 	{
-		boolean hasIcon;
-		
 		if (label.getIcon() == null)
 		{
 			return false;
@@ -509,71 +468,84 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
-	private void holdDice(JLabel l1)
+	private void swapDice(JLabel dice, JLabel holder, int index)
 	{
-		if (hasIcon(l1))
+		if (hasIcon(dice))
 		{
-			JLabel[] holder = {holder1,holder2,holder3,holder4,holder5};
-
-			for (int i = 0; i < 5; i++)
-			{
-				if (!isHolding(holder[i]))
-				{
-					holder[i].setIcon(l1.getIcon());
-					l1.setIcon(null);
-					break;
-				}	
-			}	
+			//logica
+			guardar(index);
+			takenHolders++;
+			//interfaz
+			holder.setIcon(dice.getIcon());
+			dice.setIcon(null);
 		}
+		else if (isHolding(holder))
+		{
+			//logica
+			descartar(index);
+			takenHolders--;
+			//interfaz
+			dice.setIcon(holder.getIcon());
+			setHolderIcon(holder);
+		}
+		
+		changeButton();
+
+		System.out.println("\ndice:\t"+Arrays.toString(generala.dados)); //DEBUG
+		System.out.println("saved:\t"+Arrays.toString(generala.guardados)); //DEBUG
 	}
 	
-	private void returnDice(JLabel holder)
+	private void guardar(int index)
 	{
-		JLabel[] dice = {dice1,dice2,dice4,dice3,dice5};
+		index--;
 		
-		if (isHolding(holder))
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				if (!hasIcon(dice[i]))
-				{
-					dice[i].setIcon(holder.getIcon());
-					setHolderIcon(holder);
-					break;
-				}
-			}
-		}
+		System.out.println("\nguardado: dado "+index+"\n"); //DEBUG
+		
+		generala.guardados[index] = generala.dados[index];
+		generala.dados[index] = 0;
+	}
+	
+	private void descartar(int index)
+	{
+		index--;
+		
+		System.out.println("\ndevuelto: dado "+index+"\n"); //DEBUG
+		
+		generala.dados[index] = generala.guardados[index];
+		generala.guardados[index] = 0;
 	}
 
 	private int[] getDiceValues(int[] dados, JLabel[] dice)
 	{	
-		Arrays.sort(dados);
-		
 		for (int i = 0, j = 0; i < dados.length; i++)
-		{			
-			switch (((int) dice[i].getIcon().toString().charAt(83)) - 48)
+		{
+			if (hasIcon(dice[i]))
 			{
-				case 1:
-					dados[i] = 1;
-					break;
-				case 2:
-					dados[i] = 2;
-					break;
-				case 3:
-					dados[i] = 3;
-					break;
-				case 4:
-					dados[i] = 4;
-					break;
-				case 5:
-					dados[i] = 5;
-					break;
-				case 6:
-					dados[i] = 6;
-					break;
-				default:
-					dados[i] = 0;
-					break;
+				switch (((int) dice[i].getIcon().toString().charAt(83)) - 48)
+				{
+					case 1:
+						dados[i] = 1;
+						break;
+					case 2:
+						dados[i] = 2;
+						break;
+					case 3:
+						dados[i] = 3;
+						break;
+					case 4:
+						dados[i] = 4;
+						break;
+					case 5:
+						dados[i] = 5;
+						break;
+					case 6:
+						dados[i] = 6;
+						break;
+				}
+			}
+			else
+			{
+				dados[i] = 0;
 			}
 		}
 		return dados;
@@ -590,7 +562,7 @@ public class MainWindow extends javax.swing.JFrame {
 		 */
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
+				if ("GTK+".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
@@ -634,5 +606,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTable tablaPuntajes;
     private javax.swing.JLabel tirar;
     // End of variables declaration//GEN-END:variables
+
+	private void tirarDados()
+	{		
+		generala.dados = generala.lanzar(generala.dados.length); //tirar 5 dados
+
+		for (int index = 0; index < generala.dados.length; index++)
+		{
+			if (generala.guardados[index] != 0) //si el dado fue guardado
+			{
+				generala.dados[index] = 0; //vaciar su posicion
+			}
+		}
+	}
 
 }
