@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
@@ -12,21 +13,31 @@ import javax.swing.JRadioButton;
  *
  * @author danielh
  */
-public class SelectionWindow extends javax.swing.JFrame {
-	
-	public int jugador;
-
+public class SelectionWindow extends javax.swing.JFrame
+{	
 	public MainWindow mainWindow = new MainWindow();
+	
+	public boolean isOpen;
+	
+	public Generala generala = MainWindow.generala;
+	
+	public int jugador, turno;
 
 	public SelectionWindow()
 	{
 		initComponents();
 		
+		isOpen = true;
+		
 		this.setLocationRelativeTo(this);
 		
 		JRadioButton[] radioButtons = {al1,al2,al3,al4,al5,al6,aEscalera,aFull,aPoker,aGenerala};
 		
-		int[] seleccionables = mainWindow.generala.getSeleccionable(mainWindow.generala.jugadasPosibles, jugador);
+		System.out.println("jugadas posibles = "+Arrays.toString(generala.jugadasPosibles)); //DEBUG
+		
+		int[] seleccionables = generala.getSeleccionable(generala.jugadasPosibles, jugador);
+		
+		System.out.println("seleccionables = "+Arrays.toString(seleccionables)); //DEBUG
 		
 		for (int i = 0; i < radioButtons.length; i++)
 		{
@@ -35,17 +46,14 @@ public class SelectionWindow extends javax.swing.JFrame {
 			switch (seleccionables[i])
 			{
 				case 1:
-					radioButtons[i].setText("Puntuar x al x");
+					radioButtons[i].setText("Puntuar "+generala.jugadasPosibles[i]+" en "+generala.tituloPuntajes[i]);
 					break;
 				case 0:
 					radioButtons[i].setVisible(false);
 					break;
 				case -1:
-					radioButtons[i].setText("Tachar el x");
+					radioButtons[i].setText("Tachar "+generala.tituloPuntajes[i]);
 					break;
-				
-				default:
-					throw new AssertionError();
 			}
 		}
 	}
@@ -217,8 +225,14 @@ public class SelectionWindow extends javax.swing.JFrame {
 		{
 			int selected = getSelected(rbtns);
 			
-			mainWindow.generala.puntuar(mainWindow.generala.tituloPuntajes, mainWindow.generala.jugadasPosibles, mainWindow.generala.tablaPuntajes, jugador, selected);
-
+			generala.puntuar(generala.tituloPuntajes, generala.jugadasPosibles, generala.tablaPuntajes, jugador, selected);
+			
+			System.out.println(Arrays.toString(generala.tablaPuntajes));
+			
+			mainWindow.clearDice();
+			
+			isOpen = false;
+			
 			this.dispose();
 		}
 		else JOptionPane.showMessageDialog(this, "No hay seleccion", "", JOptionPane.WARNING_MESSAGE);

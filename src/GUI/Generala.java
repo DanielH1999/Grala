@@ -177,15 +177,15 @@ public class Generala
 	
 	public int[] getSeleccionable(int[] jugadasPosibles, int jugador)
 	{
-		int[] seleccionable = {0,0,0,0,0,0,0,0,0,0};
+		int[] seleccionable = new int[jugadasPosibles.length];
 				
 		for (int i = 0; i < (jugadasPosibles.length - 1); i++)
 		{
-			if (jugadasPosibles[i+1] > 0 && tablaPuntajes[jugador][i+1] == 0) //si hay posibilidad y disponibilidad
+			if (jugadasPosibles[i+1] > 0 && tablaPuntajes[jugador][i + 1] == 0) //si hay posibilidad y disponibilidad
 			{
 				seleccionable[i] = 1; //puntuable
 			}
-			else if (jugadasPosibles[i+1] == 0 && tablaPuntajes[jugador][i+1] == 0) //si no hay posibilidad pero hay disponibilidad
+			else if (jugadasPosibles[i+1] == 0 && tablaPuntajes[jugador][i + 1] == 0) //si no hay posibilidad pero hay disponibilidad
 			{
 				seleccionable[i] = -1; //tachable
 			}

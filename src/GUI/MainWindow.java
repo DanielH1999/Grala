@@ -6,7 +6,9 @@
 package GUI;
 
 import java.util.Arrays;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,37 +16,45 @@ import javax.swing.table.DefaultTableModel;
  * @author danielh
  */
 public class MainWindow extends javax.swing.JFrame {
-
-	/**
-	 * Creates new form MainWindow
-	 */
 	
-	public Generala generala = new Generala(PlayersWindow.getPlayers());
+	public static Generala generala = new Generala(PlayersWindow.getPlayers()); 
+	
+	public DefaultTableModel tableModel;
 	
 	public MainWindow()
-	{
-		initComponents();
-		this.setLocationRelativeTo(this);
-		this.setMinimumSize(this.getPreferredSize());
-		
-		//SelectionWindow selectionWindow = new SelectionWindow();
-		
+	{		
 		generala.jugadores = PlayersWindow.getPlayers();
 		
 		generala.tablaPuntajes = new int[generala.jugadores.length][12];
 		
-		System.out.println("players = "+Arrays.toString(generala.jugadores));
+		//generala.jugadores = new String[] {"a","b","c"}; //DEBUG
 		
-		DefaultTableModel defaultTableModel = new DefaultTableModel();
+		System.out.println("players = "+Arrays.toString(generala.jugadores)); //DEBUG
 		
-		tablaPuntajes.setModel(defaultTableModel);
 		
-		for (int i = 0; i < generala.jugadores.length; i++)
+		Object[][] body = new Object[12][generala.jugadores.length+1];
+		
+		for (int i = 0; i < 11; i++)
 		{
-			generala.tablaPuntajes[i][0] = i;
-			
-			defaultTableModel.addColumn(generala.jugadores[i]);
+			for (int j = 1; j < generala.jugadores.length+1; j++)
+			{
+				body[i][j] = 0;
+			}
+			body[i][0] = generala.tituloPuntajes[i+1];
 		}
+		
+		this.tableModel = new DefaultTableModel(body, generala.jugadores);
+		
+		initComponents();
+		this.setLocationRelativeTo(this);
+		this.setMinimumSize(this.getPreferredSize());
+		
+//		for (int i = 0; i < generala.jugadores.length; i++)
+//		{
+//			generala.tablaPuntajes[i][0] = i;
+//			
+//			tableModel.addColumn(generala.jugadores[i]);
+//		}
 	}
 	/**
 	 * This method is called from within the constructor to initialize the form. WARNING:
@@ -63,7 +73,7 @@ public class MainWindow extends javax.swing.JFrame {
         dice3 = new javax.swing.JLabel();
         dice4 = new javax.swing.JLabel();
         dice5 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        holderPanel = new javax.swing.JPanel();
         tirar = new javax.swing.JLabel();
         holder1 = new javax.swing.JLabel();
         holder2 = new javax.swing.JLabel();
@@ -71,7 +81,7 @@ public class MainWindow extends javax.swing.JFrame {
         holder4 = new javax.swing.JLabel();
         holder5 = new javax.swing.JLabel();
         rightPanel = new javax.swing.JPanel();
-        panelPuntajes = new javax.swing.JScrollPane();
+        scrollableContainer = new javax.swing.JScrollPane();
         tablaPuntajes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -148,7 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         dicePanel.add(dice5, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 140, -1, -1));
 
-        jPanel2.setBackground(new java.awt.Color(0, 255, 153));
+        holderPanel.setBackground(new java.awt.Color(0, 255, 153));
 
         tirar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         tirar.setText("Tirar dados");
@@ -208,16 +218,16 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout holderPanelLayout = new javax.swing.GroupLayout(holderPanel);
+        holderPanel.setLayout(holderPanelLayout);
+        holderPanelLayout.setHorizontalGroup(
+            holderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, holderPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(holder1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(holderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(holderPanelLayout.createSequentialGroup()
                         .addComponent(holder2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(holder3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -228,13 +238,13 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(holder5, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        holderPanelLayout.setVerticalGroup(
+            holderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, holderPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tirar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(holderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(holder1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(holder2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(holder3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -251,7 +261,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(dicePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(holderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         leftPanelLayout.setVerticalGroup(
@@ -260,46 +270,25 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(dicePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(holderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         rightPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        panelPuntajes.setBackground(new java.awt.Color(255, 255, 255));
+        scrollableContainer.setForeground(new java.awt.Color(255, 255, 255));
 
-        tablaPuntajes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        tablaPuntajes.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        panelPuntajes.setViewportView(tablaPuntajes);
+        tablaPuntajes.setModel(tableModel);
+        scrollableContainer.setViewportView(tablaPuntajes);
 
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);
         rightPanelLayout.setHorizontalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rightPanelLayout.createSequentialGroup()
-                .addComponent(panelPuntajes, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(scrollableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPuntajes, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(scrollableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
@@ -380,11 +369,12 @@ public class MainWindow extends javax.swing.JFrame {
 	int turno = 1;
 	
     private void tirarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tirarMouseClicked
+		
+		JLabel[] holderList = {holder1, holder2, holder3, holder4, holder5};
+		JLabel[] diceList = {dice1, dice2, dice3, dice4, dice5};
+		
 		evaluatePlays(jugador);
 		
-        JLabel[] holderList = {holder1,holder2,holder3,holder4,holder5};
-		JLabel[] diceList = {dice1,dice2,dice3,dice4,dice5};
-				
 		tirarDados();
 		
 		//poner los iconos de los dados en dice (turnos veces)
@@ -398,6 +388,21 @@ public class MainWindow extends javax.swing.JFrame {
 		
 		//al terminar los turnos, pasar todos los dados a los holders
     }//GEN-LAST:event_tirarMouseClicked
+	
+	public void clearDice()
+	{
+		JLabel[] diceList = {dice1, dice2, dice3, dice4, dice5};
+		JLabel[] holderList = {holder1, holder2, holder3, holder4, holder5};
+		
+		for (int i = 0; i < generala.dados.length; i++)
+		{
+			generala.guardados[i] = 0;
+			generala.dados[i] = 0;
+			
+			setHolderIcon(holderList[i]);
+		}
+		setDiceIcons(diceList);
+	}
 	
 	private void changeButton()
 	{
@@ -418,53 +423,12 @@ public class MainWindow extends javax.swing.JFrame {
 		{
 			generala.calcularJugadas(generala.jugadasPosibles, generala.guardados, turno);
 			
+			System.out.println("jugadas posibles = "+Arrays.toString(generala.jugadasPosibles)); //DEBUG
+			
 			SelectionWindow selectionWindow = new SelectionWindow();
 			selectionWindow.jugador = jugador;
+			selectionWindow.turno = turno;
 			selectionWindow.setVisible(true);
-		}
-	}
-	
-	private void setHolderIcon(JLabel holder)
-	{
-		holder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/diceHolder.png")));
-	}
-	
-	private void setDiceIcons(JLabel[] dice)
-	{		
-		for (int i = 0; i < generala.dados.length; i++)
-		{
-			if (generala.dados[i] > 0)
-			{
-				dice[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/d"+generala.dados[i]+".png")));
-			}
-			else
-			{
-				dice[i].setIcon(null);
-			}
-		}
-	}
-	
-	private boolean hasIcon(JLabel label)
-	{
-		if (label.getIcon() == null)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	
-	private boolean isHolding(JLabel holder)
-	{
-		if (holder.getIcon().toString().equals("file:/home/danielh/Documentos/Programs/java/netbeans/Grala/build/classes/Pictures/diceHolder.png"))
-		{
-			return false;
-		}
-		else
-		{
-			return true;
 		}
 	}
 	
@@ -495,26 +459,6 @@ public class MainWindow extends javax.swing.JFrame {
 		System.out.println("saved:\t"+Arrays.toString(generala.guardados)); //DEBUG
 	}
 	
-	private void guardar(int index)
-	{
-		index--;
-		
-		System.out.println("\nguardado: dado "+index+"\n"); //DEBUG
-		
-		generala.guardados[index] = generala.dados[index];
-		generala.dados[index] = 0;
-	}
-	
-	private void descartar(int index)
-	{
-		index--;
-		
-		System.out.println("\ndevuelto: dado "+index+"\n"); //DEBUG
-		
-		generala.dados[index] = generala.guardados[index];
-		generala.guardados[index] = 0;
-	}
-
 	private int[] getDiceValues(int[] dados, JLabel[] dice)
 	{	
 		for (int i = 0, j = 0; i < dados.length; i++)
@@ -562,7 +506,7 @@ public class MainWindow extends javax.swing.JFrame {
 		 */
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("GTK+".equals(info.getName())) {
+				if ("Nimbus".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
@@ -599,14 +543,14 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel holder3;
     private javax.swing.JLabel holder4;
     private javax.swing.JLabel holder5;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel holderPanel;
     private javax.swing.JPanel leftPanel;
-    private javax.swing.JScrollPane panelPuntajes;
     private javax.swing.JPanel rightPanel;
+    private javax.swing.JScrollPane scrollableContainer;
     private javax.swing.JTable tablaPuntajes;
     private javax.swing.JLabel tirar;
     // End of variables declaration//GEN-END:variables
-
+	
 	private void tirarDados()
 	{		
 		generala.dados = generala.lanzar(generala.dados.length); //tirar 5 dados
@@ -619,5 +563,68 @@ public class MainWindow extends javax.swing.JFrame {
 			}
 		}
 	}
-
+	
+	private void setDiceIcons(JLabel[] dice)
+	{		
+		for (int i = 0; i < generala.dados.length; i++)
+		{
+			if (generala.dados[i] > 0)
+			{
+				dice[i].setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/d"+generala.dados[i]+".png")));
+			}
+			else
+			{
+				dice[i].setIcon(null);
+			}
+		}
+	}
+	
+	private boolean hasIcon(JLabel label)
+	{
+		if (label.getIcon() == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	private boolean isHolding(JLabel holder)
+	{
+		if (holder.getIcon().toString().equals("file:/home/danielh/Documentos/Programs/java/netbeans/Grala/build/classes/Pictures/diceHolder.png"))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	private void setHolderIcon(JLabel holder)
+	{
+		holder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/diceHolder.png")));
+	}
+	
+	private void guardar(int index)
+	{
+		index--;
+		
+		System.out.println("\nguardado: dado "+index+"\n"); //DEBUG
+		
+		generala.guardados[index] = generala.dados[index];
+		generala.dados[index] = 0;
+	}
+	
+	private void descartar(int index)
+	{
+		index--;
+		
+		System.out.println("\ndevuelto: dado "+index+"\n"); //DEBUG
+		
+		generala.dados[index] = generala.guardados[index];
+		generala.guardados[index] = 0;
+	}
 }

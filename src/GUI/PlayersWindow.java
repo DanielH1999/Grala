@@ -15,10 +15,6 @@ import javax.swing.JOptionPane;
  * @author danielh
  */
 public class PlayersWindow extends javax.swing.JFrame {
-
-	/**
-	 * Creates new form ReplayWindow
-	 */
 	
 	public static boolean isOpen;
 	public static boolean gotPlayers;
@@ -33,6 +29,9 @@ public class PlayersWindow extends javax.swing.JFrame {
 	{
 		this.defaultListModel = new DefaultListModel();
 	
+		defaultListModel.addElement("Jugadores");
+		nombres += "Jugadores, ";
+		
 		initComponents();
 		
 		this.setLocationRelativeTo(this);
@@ -64,7 +63,8 @@ public class PlayersWindow extends javax.swing.JFrame {
         closeBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(400, 200));
+        setMinimumSize(new java.awt.Dimension(420, 200));
+        setPreferredSize(new java.awt.Dimension(420, 200));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -106,6 +106,8 @@ public class PlayersWindow extends javax.swing.JFrame {
 
         listPanel.setBackground(new java.awt.Color(102, 255, 153));
 
+        playerList.setBackground(new java.awt.Color(153, 255, 153));
+        playerList.setBorder(null);
         playerList.setFont(new java.awt.Font("Noto Sans", 2, 15)); // NOI18N
         listScroll.setViewportView(playerList);
 
@@ -121,18 +123,21 @@ public class PlayersWindow extends javax.swing.JFrame {
         listPanel.setLayout(listPanelLayout);
         listPanelLayout.setHorizontalGroup(
             listPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(listScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(removeBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(listPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(listPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listPanelLayout.createSequentialGroup()
+                        .addGap(0, 53, Short.MAX_VALUE)
+                        .addComponent(removeBtn)
+                        .addGap(0, 53, Short.MAX_VALUE))
+                    .addComponent(listScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
         );
         listPanelLayout.setVerticalGroup(
             listPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(listPanelLayout.createSequentialGroup()
-                .addComponent(listScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(listScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removeBtn)
                 .addContainerGap())
@@ -151,7 +156,7 @@ public class PlayersWindow extends javax.swing.JFrame {
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelLayout.createSequentialGroup()
-                .addComponent(listPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(listPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelLayout.createSequentialGroup()
@@ -165,15 +170,15 @@ public class PlayersWindow extends javax.swing.JFrame {
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelLayout.createSequentialGroup()
-                .addContainerGap(41, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jugadorxLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelLayout.createSequentialGroup()
                         .addComponent(nombreTxt)
                         .addGap(1, 1, 1))
                     .addComponent(addBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(closeBtn)
                 .addContainerGap())
             .addComponent(listPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -243,9 +248,13 @@ public class PlayersWindow extends javax.swing.JFrame {
 	
 	private void removeFromList()
 	{
-		if (defaultListModel.getSize() > 0)
+		if (defaultListModel.getSize() > 1)
 		{
+			//System.out.println("removing: "+defaultListModel.lastElement()); //DEBUG
 			defaultListModel.removeElement(defaultListModel.lastElement());
+			nombres = defaultListModel.toString();
+			nombres = nombres.replace("[", "");
+			nombres = nombres.replace("]", "");
 			contador--;
 			jugadorxLbl.setText("jugador "+(contador));
 		}
@@ -299,7 +308,7 @@ public class PlayersWindow extends javax.swing.JFrame {
 		 */
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("GTK+".equals(info.getName())) {
+				if ("FlatLaf Light".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}

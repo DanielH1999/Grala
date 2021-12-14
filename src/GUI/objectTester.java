@@ -13,7 +13,6 @@ import java.util.Arrays;
  */
 public class objectTester
 {
-	
 	public static Generala generala;
 	
 	public static void main(String[] args)
@@ -33,14 +32,14 @@ public class objectTester
 		
 		System.out.println(Arrays.toString(generala.dados));
 		
-		//testSelectable(); [PASSED]
+		testSelectable(); //[PASSED]
 	}
 
 	private static void testSelectable()
 	{
 		int[] selectable = generala.getSeleccionable(generala.jugadasPosibles, 0);
 		
-		for (int i = 0; i < (generala.jugadasPosibles.length -1); i++)
+		for (int i = 0; i < (generala.jugadasPosibles.length - 1); i++)
 		{
 			System.out.print(generala.tituloPuntajes[i+1]+" ");
 			switch (selectable[i])
