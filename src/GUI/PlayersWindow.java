@@ -64,7 +64,6 @@ public class PlayersWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(420, 200));
-        setPreferredSize(new java.awt.Dimension(420, 200));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -96,7 +95,9 @@ public class PlayersWindow extends javax.swing.JFrame {
         jugadorxLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jugadorxLbl.setText("Jugador 1");
 
+        addBtn.setBackground(new java.awt.Color(0, 153, 102));
         addBtn.setFont(new java.awt.Font("Noto Sans", 0, 18)); // NOI18N
+        addBtn.setForeground(new java.awt.Color(255, 255, 255));
         addBtn.setText("+");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -111,7 +112,9 @@ public class PlayersWindow extends javax.swing.JFrame {
         playerList.setFont(new java.awt.Font("Noto Sans", 2, 15)); // NOI18N
         listScroll.setViewportView(playerList);
 
+        removeBtn.setBackground(new java.awt.Color(0, 153, 102));
         removeBtn.setFont(new java.awt.Font("Noto Sans", 0, 18)); // NOI18N
+        removeBtn.setForeground(new java.awt.Color(255, 255, 255));
         removeBtn.setText("-");
         removeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,7 +146,9 @@ public class PlayersWindow extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        closeBtn.setBackground(new java.awt.Color(0, 153, 102));
         closeBtn.setFont(new java.awt.Font("Noto Sans", 0, 18)); // NOI18N
+        closeBtn.setForeground(new java.awt.Color(255, 255, 255));
         closeBtn.setText("Listo");
         closeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -308,7 +313,7 @@ public class PlayersWindow extends javax.swing.JFrame {
 		 */
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("FlatLaf Light".equals(info.getName())) {
+				if ("Nimbus".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}

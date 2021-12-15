@@ -22,7 +22,7 @@ public class Generala
 	
 	public int[] jugadasPosibles = new int[11];
 	
-	public int[] dados = new int[5];
+	public int[] dados = new int[5]; //DEBUG [5][5][5][4][3]
 	
 	public int[] guardados = new int[5];
 
@@ -36,18 +36,18 @@ public class Generala
 
 	public boolean[][] jugadaHecha;
 	
-	public String[] tituloPuntajes = {"Jugador","1","2","3","4","5","6",
+	public String[] tituloPuntajes = {"jugador","1","2","3","4","5","6",
 		"Escalera","Full","Poker","Generala","Total"};
 
 	public Generala(String[] nombres)
 	{
 		jugadores = nombres;
 		
-		tablaPuntajes = new int[jugadores.length][12];
+		tablaPuntajes = new int[jugadores.length][tituloPuntajes.length];
 		
-		for (int i = 0; i < tablaPuntajes.length; i++)
+		for (int i = 1; i < tablaPuntajes.length; i++)
 		{
-			tablaPuntajes[i][0] = i;
+			tablaPuntajes[i][0] = i - 1;
 		}
 	}
 	
@@ -80,6 +80,8 @@ public class Generala
 	public void calcularJugadas(int[] jugadasPosibles, int[] dados, int Turno)
 	{
 		int Servido = 5;
+		
+		Arrays.sort(dados);
 		
 		for (int DadoActual = 0; DadoActual < dados.length; DadoActual++)
 		{
@@ -173,19 +175,21 @@ public class Generala
 			//[1][2][3][4][5] o [2][3][4][5][6]
 			jugadasPosibles[7] = 20 + Servido;
 		}
+		
+		//System.out.println("Jugadas posibles: "+Arrays.toString(jugadasPosibles)); //DEBUG
 	}
 	
 	public int[] getSeleccionable(int[] jugadasPosibles, int jugador)
 	{
 		int[] seleccionable = new int[jugadasPosibles.length];
 				
-		for (int i = 0; i < (jugadasPosibles.length - 1); i++)
+		for (int i = 1; i < jugadasPosibles.length; i++)
 		{
-			if (jugadasPosibles[i+1] > 0 && tablaPuntajes[jugador][i + 1] == 0) //si hay posibilidad y disponibilidad
+			if (jugadasPosibles[i] > 0 && tablaPuntajes[jugador][i] == 0) //si hay posibilidad y disponibilidad
 			{
 				seleccionable[i] = 1; //puntuable
 			}
-			else if (jugadasPosibles[i+1] == 0 && tablaPuntajes[jugador][i + 1] == 0) //si no hay posibilidad pero hay disponibilidad
+			else if (jugadasPosibles[i] == 0 && tablaPuntajes[jugador][i] == 0) //si no hay posibilidad pero hay disponibilidad
 			{
 				seleccionable[i] = -1; //tachable
 			}
@@ -194,18 +198,71 @@ public class Generala
 		return seleccionable;
 	}
 	
-	public void puntuar(String[] tituloPuntajes, int[] jugadasPosibles, int[][] tablaPuntajes, int jugador, int seleccion)
+	public boolean puntuar(String[] tituloPuntajes, int[] jugadasPosibles, int[][] tablaPuntajes, int jugador, int seleccion)
 	{
-		tablaPuntajes[jugador][seleccion] += jugadasPosibles[seleccion];
-
+		//System.out.println("tablaPuntajes["+jugadores.length+"]<-"+jugador); //DEBUG
 		if (tablaPuntajes[jugador][seleccion] > 0)
 		{
-			System.out.println("Anotado: " + tablaPuntajes[jugador][seleccion] + " puntos al " + tituloPuntajes[seleccion]);
+			limpiar();
+			return false;
+		}
+		if (tablaPuntajes[jugador][seleccion] == 0)
+		{
+			tablaPuntajes[jugador][seleccion] += jugadasPosibles[seleccion];
+			//System.out.println("Anotado: " + tablaPuntajes[jugador][seleccion] + " puntos al " + tituloPuntajes[seleccion]); //DEBUG
+			limpiar();
+			return true;
 		}
 		else
 		{
-			System.out.println("Tachado: " + tituloPuntajes[seleccion]);
 			tablaPuntajes[jugador][seleccion] = -1;
+			//System.out.println("Tachado: " + tituloPuntajes[seleccion]); //DEBUG
+			limpiar();
+			return true;
 		}
+	}
+	
+	public void limpiar()
+	{
+		for (int i = 0; i < jugadasPosibles.length; i++)
+		{
+			jugadasPosibles[i] = 0;
+		}
+	}
+	
+	public static int determinarGanador(String[] jugadores, int[][] tablaPuntajes, String[] tituloPuntajes)
+	{
+		//calcular totales
+		for (int jugador = 0; jugador < jugadores.length; jugador++)
+		{
+			for (int i = 1; i <= 11; i++)
+			{
+				if (tablaPuntajes[jugador][i] > 0)
+				{
+					tablaPuntajes[jugador][11] += tablaPuntajes[jugador][i];
+				}
+			}
+		}
+		
+		int Ganador = 0;
+		int Max = tablaPuntajes[0][11];
+		
+		//calcular ganador
+		for (int i = 0; i < jugadores.length; i++)
+		{
+			if (tablaPuntajes[i][11] >= 1000)
+			{
+				Ganador = i;
+				Max = tablaPuntajes[i][11];
+				break;
+			}
+			if (Max < tablaPuntajes[i][11])
+			{
+				Ganador = i;
+				Max = tablaPuntajes[i][11];
+			}
+		}
+		
+		return Ganador;
 	}
 }
