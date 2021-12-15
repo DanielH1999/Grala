@@ -230,7 +230,7 @@ public class Generala
 		}
 	}
 	
-	public static int determinarGanador(String[] jugadores, int[][] tablaPuntajes, String[] tituloPuntajes)
+	public static int determinarGanador(String[] jugadores, int[][] tablaPuntajes)
 	{
 		//calcular totales
 		for (int jugador = 0; jugador < jugadores.length; jugador++)

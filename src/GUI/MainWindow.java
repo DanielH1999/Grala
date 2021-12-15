@@ -540,7 +540,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private void getWinner() {
 		if (contadorJugadas == 10 * (generala.jugadores.length - 1))
 		{
-			String WINNER = generala.jugadores[generala.determinarGanador(generala.jugadores, generala.tablaPuntajes, generala.tituloPuntajes)];
+			String WINNER = generala.jugadores[generala.determinarGanador(generala.jugadores, generala.tablaPuntajes)];
 			JOptionPane.showMessageDialog(this, WINNER+" gano la partida!", "felicitaciones", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
