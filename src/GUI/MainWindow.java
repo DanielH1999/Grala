@@ -609,7 +609,12 @@ public class MainWindow extends javax.swing.JFrame {
 	{
 		tableModel.setValueAt(value, row, column);
 		
-		int newTotal = value + (int) tableModel.getValueAt(row, column);
+		int newTotal = 0;
+		
+		for (int i = 0; i < 10; i++)
+		{
+			newTotal += (int) tableModel.getValueAt(i, column);
+		}
 		
 		tableModel.setValueAt(newTotal, 11, column);
 		
