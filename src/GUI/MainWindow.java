@@ -361,7 +361,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void tirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tirarActionPerformed
 		turno++;
-		System.out.println("turno = "+turno); //DEBUG
+		//System.out.println("turno = "+turno); //DEBUG
 		
 		tirar.setText("Tirar ("+(generala.turnos-turno)+")");
 		
@@ -378,7 +378,7 @@ public class MainWindow extends javax.swing.JFrame {
 		//al terminar los turnos, pasar todos los dados a los holders
 		finishTurn(diceList, holderList);
 		
-		getWinner(); //cuando termina la partida
+		
     }//GEN-LAST:event_tirarActionPerformed
 	
 	public static void main(String args[]) {
@@ -530,6 +530,8 @@ public class MainWindow extends javax.swing.JFrame {
 			//System.out.println("evaluating: "+Arrays.toString(generala.guardados)); //DEBUG
 			generala.calcularJugadas(generala.jugadasPosibles, generala.guardados, turno);
 			
+			this.setFocusable(false);
+			
 			SelectionWindow selectionWindow = new SelectionWindow(this);
 			selectionWindow.jugador = jugador;
 			selectionWindow.turno = turno;
@@ -542,6 +544,7 @@ public class MainWindow extends javax.swing.JFrame {
 		{
 			String WINNER = generala.jugadores[generala.determinarGanador(generala.jugadores, generala.tablaPuntajes)];
 			JOptionPane.showMessageDialog(this, WINNER+" gano la partida!", "felicitaciones", JOptionPane.INFORMATION_MESSAGE);
+			tirar.setVisible(false);
 		}
 	}
 
@@ -607,18 +610,30 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	public void updateScoreboard(int value, int row, int column)
 	{
-		tableModel.setValueAt(value, row, column);
+		if (generala.tablaPuntajes[column][row] == -1)
+		{
+			System.out.println("ese puntaje hay que tacharlo"); //DEBUG
+			tableModel.setValueAt("-", row, column);
+		}
+		else
+		{
+			tableModel.setValueAt(value, row, column);
+		}
+		
 		
 		int newTotal = 0;
 		
 		for (int i = 0; i < 10; i++)
 		{
-			newTotal += (int) tableModel.getValueAt(i, column);
+			if (!tableModel.getValueAt(i, column).equals("-"))
+			{
+				newTotal += (int) tableModel.getValueAt(i, column);
+			}
 		}
 		
-		tableModel.setValueAt(newTotal, 11, column);
+		tableModel.setValueAt(newTotal, 10, column);
 		
-		System.out.println(value+" insertado en (C"+column+", F"+(row+1)+")"); //DEBUG
+		//System.out.println(value+" insertado en (C"+column+", F"+(row+1)+")"); //DEBUG
 		
 		//System.out.println("jugador actual: "+generala.jugadores[jugador]); //DEBUG
 		
@@ -633,7 +648,9 @@ public class MainWindow extends javax.swing.JFrame {
 		turno = 0;
 		contadorJugadas++;
 		
-		System.out.println("turno vuelve a 0 para "+generala.jugadores[jugador]); //DEBUG
+		getWinner(); //cuando termina la partida
+		
+		//System.out.println("turno vuelve a 0 para "+generala.jugadores[jugador]); //DEBUG
 		
 		//System.out.println("cambiado a: "+generala.jugadores[jugador]); //DEBUG
 	}
