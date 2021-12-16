@@ -206,20 +206,26 @@ public class Generala
 			limpiar();
 			return false;
 		}
-		if (tablaPuntajes[jugador][seleccion] == 0)
+		else if (tablaPuntajes[jugador][seleccion] == 0 && jugadasPosibles[seleccion] > 0)
 		{
+			//System.out.println("Generala ingresando numero en tabla"); //DEBUG
+			
 			tablaPuntajes[jugador][seleccion] += jugadasPosibles[seleccion];
+			
 			//System.out.println("Anotado: " + tablaPuntajes[jugador][seleccion] + " puntos al " + tituloPuntajes[seleccion]); //DEBUG
+			
 			limpiar();
 			return true;
 		}
-		else
+		else if (tablaPuntajes[jugador][seleccion] == 0)
 		{
+			//System.out.println("marcando para tachar"); //DEBUG
+			
 			tablaPuntajes[jugador][seleccion] = -1;
-			//System.out.println("Tachado: " + tituloPuntajes[seleccion]); //DEBUG
 			limpiar();
 			return true;
 		}
+		return false;
 	}
 	
 	public void limpiar()

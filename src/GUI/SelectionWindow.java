@@ -233,6 +233,8 @@ public class SelectionWindow extends javax.swing.JFrame
 			
 			//System.out.println("seleccionaste el boton "+selected); //DEBUG
 			
+			//System.out.println("SelectionWindow passing "+generala.tablaPuntajes[jugador][selected]); //DEBUG
+			
 			if (!generala.puntuar(generala.tituloPuntajes, generala.jugadasPosibles, generala.tablaPuntajes, jugador, selected))
 			{
 				JOptionPane.showMessageDialog(this, "esa casilla ya esta puntuada, por favor elija otra", "Aviso", JOptionPane.INFORMATION_MESSAGE);

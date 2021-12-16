@@ -21,7 +21,7 @@ public class MainWindow extends javax.swing.JFrame {
 	{		
 		generala.jugadores = PlayersWindow.getPlayers();
 		
-		//generala.jugadores = new String[] {"Jugadores","a","b","c"}; //DEBUG
+		generala.jugadores = new String[] {"Jugadores","debug"}; //DEBUG
 		
 		generala.tablaPuntajes = new int[generala.jugadores.length][generala.tituloPuntajes.length];
 		
@@ -610,10 +610,13 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	public void updateScoreboard(int value, int row, int column)
 	{
-		if (generala.tablaPuntajes[column][row] == -1)
+		String tachado = "[tachado]";
+		
+		//System.out.println("MainWindow entering "+value+" in the table"); //DEBUG
+
+		if (value < 0)
 		{
-			System.out.println("ese puntaje hay que tacharlo"); //DEBUG
-			tableModel.setValueAt("-", row, column);
+			tableModel.setValueAt(tachado, row, column);
 		}
 		else
 		{
@@ -625,7 +628,7 @@ public class MainWindow extends javax.swing.JFrame {
 		
 		for (int i = 0; i < 10; i++)
 		{
-			if (!tableModel.getValueAt(i, column).equals("-"))
+			if (!tableModel.getValueAt(i, column).equals(tachado))
 			{
 				newTotal += (int) tableModel.getValueAt(i, column);
 			}
