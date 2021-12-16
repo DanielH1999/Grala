@@ -21,7 +21,7 @@ public class MainWindow extends javax.swing.JFrame {
 	{		
 		generala.jugadores = PlayersWindow.getPlayers();
 		
-		generala.jugadores = new String[] {"Jugadores","debug"}; //DEBUG
+		//generala.jugadores = new String[] {"Jugadores","debug"}; //DEBUG
 		
 		generala.tablaPuntajes = new int[generala.jugadores.length][generala.tituloPuntajes.length];
 		
