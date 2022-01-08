@@ -1,18 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
-import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
-/**
- *
- * @author danielh
+/*
+ * @author Daniel Gaspar Arroyo Herrero
  */
+
 public class SelectionWindow extends javax.swing.JFrame
 {
 	private MainWindow mainWindow;
@@ -49,19 +43,24 @@ public class SelectionWindow extends javax.swing.JFrame
 		{
 			buttonGroup.add(radioButtons[i]);
 			
+			//NO MOSTRAR ELECCIONES INVALIDAS (EN PROGRESO)
+//			if (generala.jugadasPosibles[i] == 0)
+//			{
+//				System.out.println("boton a ocultar"); //DEBUG
+//				radioButtons[i].setVisible(false);
+//			}
+			
 			switch (seleccionables[i+1])
 			{
 				case 1:
 					radioButtons[i].setText("Puntuar "+generala.jugadasPosibles[i+1]+" en "+generala.tituloPuntajes[i+1]);
 					break;
-				case 0:
-					radioButtons[i].setVisible(false);
-					break;
+					
 				case -1:
 					radioButtons[i].setText("Tachar "+generala.tituloPuntajes[i+1]);
 					break;
 			}
-		}
+		}//System.out.println("==========================================="); //DEBUG
 	}
 	
 	/**
@@ -237,12 +236,14 @@ public class SelectionWindow extends javax.swing.JFrame
 			
 			if (!generala.puntuar(generala.tituloPuntajes, generala.jugadasPosibles, generala.tablaPuntajes, jugador, selected))
 			{
-				JOptionPane.showMessageDialog(this, "esa casilla ya esta puntuada, por favor elija otra", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "esa casilla ya esta puntuada, por favor elegi otra", "Aviso", JOptionPane.INFORMATION_MESSAGE);
 			}
 			else
 			{
+				generala.limpiarSeleccionables();
+				
 				mainWindow.updateScoreboard(generala.tablaPuntajes[jugador][selected], selected-1, jugador);
-
+				
 				mainWindow.clearDice();
 
 				isOpen = false;

@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
-import java.util.Arrays;
+/*
+ * @author Daniel Gaspar Arroyo Herrero
+ */
+
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author danielh
- */
 public class PlayersWindow extends javax.swing.JFrame {
 	
 	public static boolean isOpen;
@@ -28,7 +21,10 @@ public class PlayersWindow extends javax.swing.JFrame {
 	public PlayersWindow()
 	{
 		this.defaultListModel = new DefaultListModel();
-	
+				
+		isOpen = true;
+		gotPlayers = false;
+		
 		defaultListModel.addElement("Jugadores");
 		nombres += "Jugadores, ";
 		
@@ -37,9 +33,6 @@ public class PlayersWindow extends javax.swing.JFrame {
 		this.setLocationRelativeTo(this);
 		
 		this.setSize(this.getPreferredSize());
-				
-		isOpen = true;
-		gotPlayers = false;
 		
 		playerList.setModel(defaultListModel);
 	}
@@ -256,7 +249,11 @@ public class PlayersWindow extends javax.swing.JFrame {
 		if (defaultListModel.getSize() > 1)
 		{
 			//System.out.println("removing: "+defaultListModel.lastElement()); //DEBUG
+			
+			//AGREGAR OPCION DE SELECCIONAR JUGADOR A REMOVER
+			
 			defaultListModel.removeElement(defaultListModel.lastElement());
+			
 			nombres = defaultListModel.toString();
 			nombres = nombres.replace("[", "");
 			nombres = nombres.replace("]", "");

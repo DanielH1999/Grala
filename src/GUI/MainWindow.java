@@ -9,24 +9,35 @@ import javax.swing.table.DefaultTableModel;
  * @author Daniel Gaspar Arroyo Herrero
  */
 
+//FIX: puntuar automaticamente y ultimo toque del boton se solapan
+
 public class MainWindow extends javax.swing.JFrame {
 	
-	public static Generala generala = new Generala(PlayersWindow.getPlayers()); 
+	public static Generala generala = new Generala(); 
 	
 	public DefaultTableModel tableModel;
 	
 	public Object[][] tableBody;
 	
 	public MainWindow()
-	{		
-		generala.jugadores = PlayersWindow.getPlayers();
+	{
+		initGrala();
 		
-		//generala.jugadores = new String[] {"Jugadores","debug"}; //DEBUG
+		initComponents();
+		this.setLocationRelativeTo(this);
+		this.setMinimumSize(this.getPreferredSize());
+	}
+	
+	public void initGrala()
+	{
+		generala.jugadores = PlayersWindow.getPlayers();
 		
 		generala.tablaPuntajes = new int[generala.jugadores.length][generala.tituloPuntajes.length];
 		
-		//System.out.println("players = "+Arrays.toString(generala.jugadores)); //DEBUG
-		
+		for (int i = 1; i < generala.tablaPuntajes.length; i++)
+		{
+			generala.tablaPuntajes[i][0] = i - 1;
+		}
 		
 		tableBody = new Object[generala.tituloPuntajes.length][generala.jugadores.length+1];
 		
@@ -40,10 +51,6 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 		
 		this.tableModel = new DefaultTableModel(tableBody, generala.jugadores);
-		
-		initComponents();
-		this.setLocationRelativeTo(this);
-		this.setMinimumSize(this.getPreferredSize());
 	}
 	
 	int contadorJugadas = 0;
@@ -70,6 +77,7 @@ public class MainWindow extends javax.swing.JFrame {
         holder5 = new javax.swing.JLabel();
         tirar = new javax.swing.JButton();
         rightPanel = new javax.swing.JPanel();
+        playerIndicator = new javax.swing.JLabel();
         scrollableContainer = new javax.swing.JScrollPane();
         tablaPuntajes = new javax.swing.JTable();
 
@@ -268,6 +276,12 @@ public class MainWindow extends javax.swing.JFrame {
 
         rightPanel.setBackground(new java.awt.Color(255, 255, 255));
 
+        playerIndicator.setBackground(new java.awt.Color(255, 255, 255));
+        playerIndicator.setForeground(new java.awt.Color(51, 51, 51));
+        playerIndicator.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        playerIndicator.setText(generala.jugadores[jugador]);
+        playerIndicator.setToolTipText("indicador de jugador");
+
         scrollableContainer.setForeground(new java.awt.Color(255, 255, 255));
 
         tablaPuntajes.setModel(tableModel);
@@ -282,10 +296,18 @@ public class MainWindow extends javax.swing.JFrame {
         rightPanelLayout.setHorizontalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(scrollableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(playerIndicator)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(playerIndicator)
+                .addGap(5, 5, 5)
+                .addComponent(scrollableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
@@ -360,25 +382,22 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_holder1MouseClicked
 
     private void tirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tirarActionPerformed
-		turno++;
-		//System.out.println("turno = "+turno); //DEBUG
-		
-		tirar.setText("Tirar ("+(generala.turnos-turno)+")");
-		
-		JLabel[] holderList = {holder1, holder2, holder3, holder4, holder5};
+		//JLabel[] holderList = {holder1, holder2, holder3, holder4, holder5};
 		JLabel[] diceList = {dice1, dice2, dice3, dice4, dice5};
 		
-		evaluatePlays(jugador);
+		turno++;
+		
+		changeButton();
 		
 		tirarDados();
 		
 		//poner los iconos de los dados en pantalla
 		setDiceIcons(diceList);
 		
+		evaluatePlays(jugador);
+		
 		//al terminar los turnos, pasar todos los dados a los holders
-		finishTurn(diceList, holderList);
-		
-		
+		//finishTurn(diceList, holderList);
     }//GEN-LAST:event_tirarActionPerformed
 	
 	public static void main(String args[]) {
@@ -428,6 +447,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel holder5;
     private javax.swing.JPanel holderPanel;
     private javax.swing.JPanel leftPanel;
+    private javax.swing.JLabel playerIndicator;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JScrollPane scrollableContainer;
     private javax.swing.JTable tablaPuntajes;
@@ -474,9 +494,9 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 	}
 	
-	private boolean isHolding(JLabel holder)
+	private boolean isHolding(int index)
 	{
-		if (holder.getIcon().toString().equals("file:/home/danielh/Documentos/Programs/java/netbeans/Grala/build/classes/Pictures/diceHolder.png"))
+		if (generala.guardados[index] == 0)
 		{
 			return false;
 		}
@@ -488,7 +508,7 @@ public class MainWindow extends javax.swing.JFrame {
 	
 	private void setHolderIcon(JLabel holder)
 	{
-		holder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/diceHolder.png")));
+		holder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/diceHolder.png"), "Dice holder"));
 	}
 	
 	private void guardar(int index)
@@ -519,50 +539,71 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 		else
 		{
-			tirar.setText("Tirar ("+(generala.turnos-turno)+")");
+			tirar.setText("Tirar ("+(generala.turnos - turno)+")");
 		}
 	}
 	
-	private void evaluatePlays(int jugador)
+	private boolean evaluateTurn()
 	{
-		if (takenHolders == 5)
-		{
-			//System.out.println("evaluating: "+Arrays.toString(generala.guardados)); //DEBUG
-			generala.calcularJugadas(generala.jugadasPosibles, generala.guardados, turno);
-			
-			this.setFocusable(false);
-			
-			SelectionWindow selectionWindow = new SelectionWindow(this);
-			selectionWindow.jugador = jugador;
-			selectionWindow.turno = turno;
-			selectionWindow.setVisible(true);
-		}
-	}
+		JLabel[] holderList = {holder1, holder2, holder3, holder4, holder5};
+		JLabel[] diceList = {dice1, dice2, dice3, dice4, dice5};
 
-	private void getWinner() {
-		if (contadorJugadas == 10 * (generala.jugadores.length - 1))
-		{
-			String WINNER = generala.jugadores[generala.determinarGanador(generala.jugadores, generala.tablaPuntajes)];
-			JOptionPane.showMessageDialog(this, WINNER+" gano la partida!", "felicitaciones", JOptionPane.INFORMATION_MESSAGE);
-			tirar.setVisible(false);
-		}
-	}
-
-	private void finishTurn(JLabel[] diceList, JLabel[] holderList)
-	{
 		if (generala.turnos - turno == 0)
 		{
-			for (int i = 0; i < diceList.length; i++)
+			for (int i = 0; i < holderList.length; i++)
 			{
-				if (!isHolding(holderList[i]))
+				if (!isHolding(i))
 				{
 					swapDice(diceList[i], holderList[i], i+1);
 				}
 			}
-			evaluatePlays(jugador);
+			return true;
+		}
+		return false;
+	}
+	
+	private void evaluatePlays(int jugador)
+	{
+		if (takenHolders == 5 || evaluateTurn())
+		{
+			//System.out.println("evaluating: "+Arrays.toString(generala.guardados)); //DEBUG
+			if (generala.calcularJugadas(generala.jugadasPosibles, generala.guardados, turno) == 1)
+			{
+				printWinner(generala.jugadores[jugador], "generala servida");
+			}
+			else
+			{
+				this.setFocusable(false);
+
+				SelectionWindow selectionWindow = new SelectionWindow(this);
+				selectionWindow.jugador = jugador;
+				selectionWindow.turno = turno;
+				selectionWindow.setVisible(true);
+			}
 		}
 	}
 	
+	private void printWinner(String nombre)
+	{
+		JOptionPane.showMessageDialog(this, "¡"+nombre+" gano la partida!", "felicitaciones", JOptionPane.INFORMATION_MESSAGE);
+		leftPanel.setVisible(false);
+	}
+	
+	private void printWinner(String nombre, String razon)
+	{
+		JOptionPane.showMessageDialog(this, "¡"+nombre+" gano la partida por "+razon+"!", "felicitaciones", JOptionPane.INFORMATION_MESSAGE);
+		leftPanel.setVisible(false);
+	}
+
+	private void getWinner()
+	{
+		if (contadorJugadas == 10 * (generala.jugadores.length - 1))
+		{
+			String WINNER = generala.jugadores[generala.determinarGanador(generala.jugadores, generala.tablaPuntajes)];
+			printWinner(WINNER);
+		}
+	}
+
 	public void clearDice()
 	{
 		JLabel[] diceList = {dice1, dice2, dice3, dice4, dice5};
@@ -594,7 +635,7 @@ public class MainWindow extends javax.swing.JFrame {
 			holder.setIcon(dice.getIcon());
 			dice.setIcon(null);
 		}
-		else if (isHolding(holder))
+		else if (isHolding(index))
 		{
 			descartar(index);
 			takenHolders--;
@@ -612,8 +653,6 @@ public class MainWindow extends javax.swing.JFrame {
 	{
 		String tachado = "[tachado]";
 		
-		//System.out.println("MainWindow entering "+value+" in the table"); //DEBUG
-
 		if (value < 0)
 		{
 			tableModel.setValueAt(tachado, row, column);
@@ -636,10 +675,6 @@ public class MainWindow extends javax.swing.JFrame {
 		
 		tableModel.setValueAt(newTotal, 10, column);
 		
-		//System.out.println(value+" insertado en (C"+column+", F"+(row+1)+")"); //DEBUG
-		
-		//System.out.println("jugador actual: "+generala.jugadores[jugador]); //DEBUG
-		
 		if (jugador < generala.jugadores.length-1)
 		{
 			jugador++;
@@ -651,10 +686,9 @@ public class MainWindow extends javax.swing.JFrame {
 		turno = 0;
 		contadorJugadas++;
 		
+		playerIndicator.setText(generala.jugadores[jugador]);
+		
 		getWinner(); //cuando termina la partida
 		
-		//System.out.println("turno vuelve a 0 para "+generala.jugadores[jugador]); //DEBUG
-		
-		//System.out.println("cambiado a: "+generala.jugadores[jugador]); //DEBUG
 	}
 }

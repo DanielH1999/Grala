@@ -1,17 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GUI;
 
 import java.util.Random;
 import java.util.Arrays;
 
-/**
- *
- * @author danielh
+/*
+ * @author Daniel Gaspar Arroyo Herrero
  */
+
 public class Generala
 {
 	public int turnos = 3;
@@ -38,18 +33,6 @@ public class Generala
 	
 	public String[] tituloPuntajes = {"jugador","1","2","3","4","5","6",
 		"Escalera","Full","Poker","Generala","Total"};
-
-	public Generala(String[] nombres)
-	{
-		jugadores = nombres;
-		
-		tablaPuntajes = new int[jugadores.length][tituloPuntajes.length];
-		
-		for (int i = 1; i < tablaPuntajes.length; i++)
-		{
-			tablaPuntajes[i][0] = i - 1;
-		}
-	}
 	
 	public int[] lanzar(int veces)
 	{
@@ -77,8 +60,9 @@ public class Generala
 		return dados;
 	}
 	
-	public void calcularJugadas(int[] jugadasPosibles, int[] dados, int Turno)
+	public int calcularJugadas(int[] jugadasPosibles, int[] dados, int Turno)
 	{
+		//return 1 -> generala servida
 		int Servido = 5;
 		
 		Arrays.sort(dados);
@@ -125,7 +109,7 @@ public class Generala
 					if (Turno == 1) //si es generala servida, gana automaticamente
 					{
 						ganador = jugadores[a];
-						break;
+						return 1;
 					}
 					
 					jugadasPosibles[10] = 60;
@@ -177,6 +161,7 @@ public class Generala
 		}
 		
 		//System.out.println("Jugadas posibles: "+Arrays.toString(jugadasPosibles)); //DEBUG
+		return 0;
 	}
 	
 	public int[] getSeleccionable(int[] jugadasPosibles, int jugador)
@@ -203,7 +188,7 @@ public class Generala
 		//System.out.println("tablaPuntajes["+jugadores.length+"]<-"+jugador); //DEBUG
 		if (tablaPuntajes[jugador][seleccion] > 0)
 		{
-			limpiar();
+			//limpiar(); //DEBUG
 			return false;
 		}
 		else if (tablaPuntajes[jugador][seleccion] == 0 && jugadasPosibles[seleccion] > 0)
@@ -214,7 +199,7 @@ public class Generala
 			
 			//System.out.println("Anotado: " + tablaPuntajes[jugador][seleccion] + " puntos al " + tituloPuntajes[seleccion]); //DEBUG
 			
-			limpiar();
+			//limpiar(); //DEBUG
 			return true;
 		}
 		else if (tablaPuntajes[jugador][seleccion] == 0)
@@ -222,13 +207,13 @@ public class Generala
 			//System.out.println("marcando para tachar"); //DEBUG
 			
 			tablaPuntajes[jugador][seleccion] = -1;
-			limpiar();
+			//limpiar(); //DEBUG
 			return true;
 		}
 		return false;
 	}
 	
-	public void limpiar()
+	public void limpiarSeleccionables()
 	{
 		for (int i = 0; i < jugadasPosibles.length; i++)
 		{
@@ -239,7 +224,7 @@ public class Generala
 	public static int determinarGanador(String[] jugadores, int[][] tablaPuntajes)
 	{
 		//calcular totales
-		for (int jugador = 0; jugador < jugadores.length; jugador++)
+		for (int jugador = 1; jugador < jugadores.length; jugador++)
 		{
 			for (int i = 1; i <= 11; i++)
 			{
@@ -250,8 +235,8 @@ public class Generala
 			}
 		}
 		
-		int Ganador = 0;
-		int Max = tablaPuntajes[0][11];
+		int Ganador = 1;
+		int Max = tablaPuntajes[1][11];
 		
 		//calcular ganador
 		for (int i = 0; i < jugadores.length; i++)
