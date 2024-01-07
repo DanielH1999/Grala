@@ -2,8 +2,6 @@
 
 Una version del clasico juego de mesa "generala" escrito en java, el proyecto fue iniciado a fines de octubre de 2021.
 
-Este proyecto no contiene elementos ni relacion con "[ProyectoGrupal-Generala](github.com/DanielH1999/ProyectoGrupal-Generala)" el ultimo fue escrito posteriormente.
-
 El proyecto es mi version del clasico juego de mesa "generala" escrito en java, fue iniciado a fines de octubre de 2021, desarrollo de la interfaz en proceso.
 
 ## Cambios de la version:
